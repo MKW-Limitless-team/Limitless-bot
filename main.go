@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"limitless-bot/commands"
 	"limitless-bot/events"
 	"log"
 	"os"
@@ -28,6 +29,9 @@ func main() {
 	}
 
 	events.RegisterEvents(session)
+	commands.RegisterCommands(session)
+	commands.RegisterInteractions(session)
+	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	defer session.Close()
 
