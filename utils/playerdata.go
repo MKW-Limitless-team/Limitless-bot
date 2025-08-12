@@ -1,4 +1,4 @@
-package playerdata
+package utils
 
 type PlayerData struct {
 	Name       string

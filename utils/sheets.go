@@ -3,14 +3,13 @@ package utils
 import (
 	"context"
 	"fmt"
-	"limitless-bot/playerdata"
 	"log"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
 
-func GetPlayerData() []playerdata.PlayerData {
+func GetPlayerData() []PlayerData {
 	ctx := context.Background()
 
 	saFile := "credentials.json"
@@ -28,13 +27,13 @@ func GetPlayerData() []playerdata.PlayerData {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
 
-	players := make([]playerdata.PlayerData, 0)
+	players := make([]PlayerData, 0)
 	if len(resp.Values) == 0 {
 		fmt.Println("No data found.")
 	} else {
 		for _, row := range resp.Values {
 			if row[0] != "" {
-				playerdata := playerdata.PlayerData{}
+				playerdata := PlayerData{}
 
 				if str, ok := row[0].(string); ok {
 					playerdata.Name = str
