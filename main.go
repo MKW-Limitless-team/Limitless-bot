@@ -27,7 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	events.ConfigureEvents(session)
+	events.RegisterEvents(session)
 
 	defer session.Close()
 
