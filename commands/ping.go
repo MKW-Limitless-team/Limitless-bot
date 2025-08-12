@@ -8,17 +8,18 @@ import (
 )
 
 func PingCommand() *discordgo.ApplicationCommand {
-	ping := command.NewChatApplicationCommand("ping", "pings the bot")
+	ping := command.NewChatApplicationCommand("ping", "pings the bot").
+		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
 	return ping.ApplicationCommand
 }
 
-func PingInteractionCreate(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+func PingResponse() *discordgo.InteractionResponse {
 	response := response.
 		NewMessageResponse().
 		SetInteractionResponseData(PingData())
 
-	_ = session.InteractionRespond(interaction.Interaction, response.InteractionResponse)
+	return response.InteractionResponse
 }
 
 func PingData() *discordgo.InteractionResponseData {

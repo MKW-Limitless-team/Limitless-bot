@@ -1,4 +1,4 @@
-package embeds
+package embed
 
 import (
 	"limitless-bot/components/button"

@@ -1,4 +1,4 @@
-package embeds
+package embed
 
 import (
 	"github.com/bwmarrin/discordgo"

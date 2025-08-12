@@ -9,6 +9,7 @@ var globalCommands []*discordgo.ApplicationCommand = make([]*discordgo.Applicati
 func RegisterCommands(session *discordgo.Session) error {
 
 	// Add commands here
+	globalCommands = append(globalCommands, HelpCommand())
 	globalCommands = append(globalCommands, PingCommand())
 
 	// Register commands globally
@@ -18,8 +19,4 @@ func RegisterCommands(session *discordgo.Session) error {
 	}
 
 	return nil
-}
-
-func RegisterInteractions(session *discordgo.Session) {
-	session.AddHandler(PingInteractionCreate)
 }
