@@ -4,7 +4,7 @@ type PlayerData struct {
 	Name       string
 	FriendCode string
 	DiscordId  string
-	Mmr        int
+	Mmr        float64
 	Mii        string
 }
 
@@ -16,5 +16,5 @@ type Season struct {
 
 type Participant struct {
 	Name string
-	Mmr  int
+	Mmr  float64
 }
