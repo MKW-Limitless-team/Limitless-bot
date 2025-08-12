@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"limitless-bot/events"
 	"log"
 	"os"
 	"os/signal"
@@ -15,7 +16,7 @@ var (
 )
 
 func main() {
-	TOKEN = os.Getenv("SQUIREBOT_TOKEN")
+	TOKEN = os.Getenv("SQUIRE_TOKEN")
 	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
 		log.Fatal(err)
@@ -25,6 +26,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	events.ConfigureEvents(session)
 
 	defer session.Close()
 
