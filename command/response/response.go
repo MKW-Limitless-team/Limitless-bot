@@ -23,6 +23,12 @@ func NewMessageResponse() *Response {
 	return response
 }
 
+func NewUpdateMessageResponse() *Response {
+	response := NewInteractionResponse(discordgo.InteractionResponseUpdateMessage)
+
+	return response
+}
+
 func (response *Response) SetInteractionResponseData(data *discordgo.InteractionResponseData) *Response {
 	response.Data = data
 
