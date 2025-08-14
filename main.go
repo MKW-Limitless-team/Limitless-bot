@@ -30,7 +30,6 @@ func main() {
 
 	events.RegisterEvents(session)
 	commands.RegisterCommands(session)
-	session.AddHandler(commands.InteractionCreate)
 
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 

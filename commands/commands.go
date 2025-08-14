@@ -4,16 +4,16 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var globalCommands []*discordgo.ApplicationCommand = make([]*discordgo.ApplicationCommand, 0)
+var GlobalCommands []*discordgo.ApplicationCommand = make([]*discordgo.ApplicationCommand, 0)
 
 func RegisterCommands(session *discordgo.Session) error {
 
 	// Add commands here
-	globalCommands = append(globalCommands, HelpCommand())
-	globalCommands = append(globalCommands, PingCommand())
+	GlobalCommands = append(GlobalCommands, HelpCommand())
+	GlobalCommands = append(GlobalCommands, PingCommand())
 
 	// Register commands globally
-	_, err := session.ApplicationCommandBulkOverwrite(session.State.User.ID, "", globalCommands)
+	_, err := session.ApplicationCommandBulkOverwrite(session.State.User.ID, "", GlobalCommands)
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,7 @@
 package events
 
 import (
-	"limitless-bot/commands"
+	"limitless-bot/responses"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -12,9 +12,9 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 	if interaction.Type == discordgo.InteractionApplicationCommand && interaction.GuildID != "" {
 		switch cmd := interaction.ApplicationCommandData().Name; cmd {
 		case "help":
-			response = commands.HelpResponse(session, interaction)
+			response = responses.HelpResponse(session, interaction)
 		case "ping":
-			response = commands.PingResponse()
+			response = responses.PingResponse()
 		}
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
