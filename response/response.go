@@ -3,35 +3,28 @@ package response
 import "github.com/bwmarrin/discordgo"
 
 type Response struct {
-	ID                  string
-	InteractionResponse *discordgo.InteractionResponse
+	*discordgo.InteractionResponse
 }
 
 func NewResponse() *Response {
 	return &Response{InteractionResponse: &discordgo.InteractionResponse{}}
 }
 
-func NewInteractionResponse(id string, responseType discordgo.InteractionResponseType) *Response {
+func NewInteractionResponse(responseType discordgo.InteractionResponseType) *Response {
 	response := NewResponse().
 		SetApplicationCommandType(responseType)
 
 	return response
 }
 
-func NewMessageResponse(id string) *Response {
-	response := NewInteractionResponse(id, discordgo.InteractionResponseChannelMessageWithSource)
+func NewMessageResponse() *Response {
+	response := NewInteractionResponse(discordgo.InteractionResponseChannelMessageWithSource)
 
 	return response
 }
 
-func NewUpdateMessageResponse(id string) *Response {
-	response := NewInteractionResponse(id, discordgo.InteractionResponseUpdateMessage)
-
-	return response
-}
-
-func (response *Response) SetID(id string) *Response {
-	response.ID = id
+func NewUpdateMessageResponse() *Response {
+	response := NewInteractionResponse(discordgo.InteractionResponseUpdateMessage)
 
 	return response
 }

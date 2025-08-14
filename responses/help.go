@@ -11,7 +11,7 @@ import (
 
 func HelpResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.
-		NewMessageResponse("help").
+		NewMessageResponse().
 		SetInteractionResponseData(HelpData(session, interaction))
 
 	return response.InteractionResponse

@@ -8,7 +8,7 @@ import (
 
 func PingResponse() *discordgo.InteractionResponse {
 	response := response.
-		NewMessageResponse("ping").
+		NewMessageResponse().
 		SetInteractionResponseData(PingData())
 
 	return response.InteractionResponse
