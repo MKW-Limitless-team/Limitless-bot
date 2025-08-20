@@ -6,12 +6,12 @@ type Option struct {
 	*discordgo.ApplicationCommandOption
 }
 
-func NewOption() *Option {
+func newOption() *Option {
 	return &Option{&discordgo.ApplicationCommandOption{}}
 }
 
 func NewCommandOption(name string, description string, optionType discordgo.ApplicationCommandOptionType, required bool) *Option {
-	commandOption := NewOption().
+	commandOption := newOption().
 		SetName(name).
 		SetDescription(description).
 		SetOptionType(optionType).

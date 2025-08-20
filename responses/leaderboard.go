@@ -63,9 +63,9 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	homeButton := button.NewBasicButton("Home", HOME_BUTTON, discordgo.SecondaryButton, false)
 	nextButton := button.NewBasicButton("Next", NEXT_BUTTON, discordgo.PrimaryButton, end)
 
-	actionRow.Components = append(actionRow.Components, previousButton)
-	actionRow.Components = append(actionRow.Components, homeButton)
-	actionRow.Components = append(actionRow.Components, nextButton)
+	actionRow.AddButton(previousButton)
+	actionRow.AddButton(homeButton)
+	actionRow.AddButton(nextButton)
 
 	data.AddActionRow(actionRow)
 

@@ -14,7 +14,7 @@ func NewActionRow() *ActionRow {
 	return &ActionRow{&discordgo.ActionsRow{}}
 }
 
-func (actionRow *ActionRow) AddEmbed(button *button.Button) *ActionRow {
+func (actionRow *ActionRow) AddButton(button *button.Button) *ActionRow {
 	actionRow.Components = append(actionRow.Components, button)
 
 	return actionRow

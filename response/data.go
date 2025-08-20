@@ -10,12 +10,12 @@ type Data struct {
 	*discordgo.InteractionResponseData
 }
 
-func NewData() *Data {
+func newData() *Data {
 	return &Data{&discordgo.InteractionResponseData{}}
 }
 
 func NewResponseData(content string) *Data {
-	responseData := NewData().
+	responseData := newData().
 		SetContent(content)
 
 	return responseData

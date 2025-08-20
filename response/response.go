@@ -6,12 +6,12 @@ type Response struct {
 	*discordgo.InteractionResponse
 }
 
-func NewResponse() *Response {
+func newResponse() *Response {
 	return &Response{InteractionResponse: &discordgo.InteractionResponse{}}
 }
 
 func NewInteractionResponse(responseType discordgo.InteractionResponseType) *Response {
-	response := NewResponse().
+	response := newResponse().
 		SetApplicationCommandType(responseType)
 
 	return response
