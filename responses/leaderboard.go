@@ -47,7 +47,6 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 			player := playerData[index]
 
 			embed.AddField("", fmt.Sprintf("**%d.** %s: %5.f", index+1, player.Name, player.Mmr), false)
-			println(fmt.Sprintf("**%d.** %s:%5.f", index+1, player.Name, player.Mmr))
 		} else {
 			end = true
 			embed.AddField("End", ":rewind: :regional_indicator_b: :regional_indicator_a: :regional_indicator_c: :regional_indicator_k: ", false)
@@ -63,9 +62,9 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	homeButton := button.NewBasicButton("Home", HOME_BUTTON, discordgo.SecondaryButton, false)
 	nextButton := button.NewBasicButton("Next", NEXT_BUTTON, discordgo.PrimaryButton, end)
 
-	actionRow.AddButton(previousButton)
-	actionRow.AddButton(homeButton)
-	actionRow.AddButton(nextButton)
+	actionRow.AddComponent(previousButton)
+	actionRow.AddComponent(homeButton)
+	actionRow.AddComponent(nextButton)
 
 	data.AddActionRow(actionRow)
 
