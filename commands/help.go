@@ -6,8 +6,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var (
+	HELP_COMMAND = "help"
+)
+
 func HelpCommand() *discordgo.ApplicationCommand {
-	command := command.NewChatApplicationCommand("help", "Lists the bot's commands").
+	command := command.NewChatApplicationCommand(HELP_COMMAND, "Lists the bot's commands").
 		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
 	return command.ApplicationCommand
