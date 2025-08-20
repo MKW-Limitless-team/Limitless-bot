@@ -6,8 +6,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func HelpCommand() *discordgo.ApplicationCommand {
-	command := command.NewChatApplicationCommand("help", "Lists the bot's commands").
+func LeaderBoardCommand() *discordgo.ApplicationCommand {
+	command := command.NewChatApplicationCommand("leaderboard", "shows the leaderboard").
 		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
 	return command.ApplicationCommand

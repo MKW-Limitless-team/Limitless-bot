@@ -7,8 +7,8 @@ import (
 )
 
 func PingCommand() *discordgo.ApplicationCommand {
-	ping := command.NewChatApplicationCommand("ping", "pings the bot").
+	command := command.NewChatApplicationCommand("ping", "pings the bot").
 		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
-	return ping.ApplicationCommand
+	return command.ApplicationCommand
 }

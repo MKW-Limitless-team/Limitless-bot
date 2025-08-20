@@ -9,7 +9,7 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-func GetPlayerData() []PlayerData {
+func GetPlayerData() []*PlayerData {
 	ctx := context.Background()
 
 	saFile := "credentials.json"
@@ -21,19 +21,19 @@ func GetPlayerData() []PlayerData {
 
 	spreadsheetId := "1d682WcmXa1qKOKCTJFj89hsbOALjTMQqQIWqbgmfBY8"
 
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, "Playerdata!A2:E").ValueRenderOption("UNFORMATTED_VALUE").ValueRenderOption("FORMULA").Do()
+	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, "Playerdata!A2:E12").ValueRenderOption("UNFORMATTED_VALUE").ValueRenderOption("FORMULA").Do()
 
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
 
-	players := make([]PlayerData, 0)
+	players := make([]*PlayerData, 0)
 	if len(resp.Values) == 0 {
 		fmt.Println("No data found.")
 	} else {
 		for _, row := range resp.Values {
 			if row[0] != "" {
-				playerdata := PlayerData{}
+				playerdata := &PlayerData{}
 
 				if str, ok := row[0].(string); ok {
 					playerdata.Name = str

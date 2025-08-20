@@ -15,6 +15,8 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 			response = responses.HelpResponse(session, interaction)
 		case "ping":
 			response = responses.PingResponse()
+		case "leaderboard":
+			response = responses.LeaderBoardResponse(session, interaction, 0)
 		}
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
