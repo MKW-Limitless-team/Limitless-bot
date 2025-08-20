@@ -21,7 +21,7 @@ func GetPlayerData() []*PlayerData {
 
 	spreadsheetId := "1d682WcmXa1qKOKCTJFj89hsbOALjTMQqQIWqbgmfBY8"
 
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, "Playerdata!A2:E12").ValueRenderOption("UNFORMATTED_VALUE").ValueRenderOption("FORMULA").Do()
+	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, "Playerdata!A2:E").ValueRenderOption("UNFORMATTED_VALUE").ValueRenderOption("FORMULA").Do()
 
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)

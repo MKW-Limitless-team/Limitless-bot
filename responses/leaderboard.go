@@ -23,9 +23,14 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	data := response.NewResponseData("")
 	embed := embed.NewRichEmbed("**Leaderboard**", "Personal Eval", 0xffd700)
 	embed.SetThumbnail(guild.IconURL(""))
-	playerData := utils.GetPlayerData()
+	playerData := utils.SortByMMR(utils.GetPlayerData())
 
-	for index, player := range playerData {
+	playersPerPage := 10
+
+	for i := range playersPerPage * page {
+		index := playersPerPage + i
+		player := playerData[index]
+
 		embed.AddField("", fmt.Sprintf("**%d.** %s: %5.f", index+1, player.Name, player.Mmr), false)
 		println(fmt.Sprintf("**%d.** %s:%5.f", index+1, player.Name, player.Mmr))
 	}
