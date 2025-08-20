@@ -21,11 +21,11 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		}
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
-		case "previous_button":
+		case responses.PREVIOUS_BUTTON:
 			response = responses.IncPage(session, interaction, -1)
-		case "home_button":
+		case responses.HOME_BUTTON:
 			response = responses.LeaderBoardResponse(session, interaction, 0)
-		case "next_button":
+		case responses.NEXT_BUTTON:
 			response = responses.IncPage(session, interaction, 1)
 		}
 		response.Type = discordgo.InteractionResponseUpdateMessage

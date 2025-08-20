@@ -12,6 +12,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var (
+	PREVIOUS_BUTTON = "previous_button"
+	NEXT_BUTTON     = "next_button"
+	HOME_BUTTON     = "home_button"
+)
+
 func LeaderBoardResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate, page int) *discordgo.InteractionResponse {
 	guild := utils.GetGuild(session, interaction.GuildID)
 
@@ -53,9 +59,9 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 
 	actionRow := e.NewActionRow()
 
-	previousButton := button.NewBasicButton("Previous", "previous_button", discordgo.PrimaryButton, (page == 0))
-	homeButton := button.NewBasicButton("Home", "home_button", discordgo.SecondaryButton, false)
-	nextButton := button.NewBasicButton("Next", "next_button", discordgo.PrimaryButton, end)
+	previousButton := button.NewBasicButton("Previous", PREVIOUS_BUTTON, discordgo.PrimaryButton, (page == 0))
+	homeButton := button.NewBasicButton("Home", HOME_BUTTON, discordgo.SecondaryButton, false)
+	nextButton := button.NewBasicButton("Next", NEXT_BUTTON, discordgo.PrimaryButton, end)
 
 	actionRow.Components = append(actionRow.Components, previousButton)
 	actionRow.Components = append(actionRow.Components, homeButton)
