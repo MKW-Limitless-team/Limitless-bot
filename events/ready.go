@@ -11,7 +11,7 @@ func Ready(session *discordgo.Session, event *discordgo.Ready) {
 		IdleSince: nil,
 		Activities: []*discordgo.Activity{
 			{
-				Name:     "Mario Kart Wii: Limitless",
+				Name:     "🎮 Mario Kart Wii: Limitless",
 				Type:     discordgo.ActivityTypeGame,
 				URL:      "https://wiki.tockdom.com/wiki/Mario_Kart_Wii:_Limitless",
 				Instance: true,
