@@ -10,32 +10,38 @@ func newResponse() *Response {
 	return &Response{InteractionResponse: &discordgo.InteractionResponse{}}
 }
 
-func NewInteractionResponse(responseType discordgo.InteractionResponseType) *Response {
+func newInteractionResponse(responseType discordgo.InteractionResponseType) *Response {
 	response := newResponse().
-		SetApplicationCommandType(responseType)
+		SetResponseType(responseType)
 
 	return response
 }
 
 func NewMessageResponse() *Response {
-	response := NewInteractionResponse(discordgo.InteractionResponseChannelMessageWithSource)
+	response := newInteractionResponse(discordgo.InteractionResponseChannelMessageWithSource)
+
+	return response
+}
+
+func NewModalResponse() *Response {
+	response := newInteractionResponse(discordgo.InteractionResponseModal)
 
 	return response
 }
 
 func NewUpdateMessageResponse() *Response {
-	response := NewInteractionResponse(discordgo.InteractionResponseUpdateMessage)
+	response := newInteractionResponse(discordgo.InteractionResponseUpdateMessage)
 
 	return response
 }
 
-func (response *Response) SetInteractionResponseData(data *discordgo.InteractionResponseData) *Response {
+func (response *Response) SetResponseData(data *discordgo.InteractionResponseData) *Response {
 	response.InteractionResponse.Data = data
 
 	return response
 }
 
-func (response *Response) SetApplicationCommandType(responseType discordgo.InteractionResponseType) *Response {
+func (response *Response) SetResponseType(responseType discordgo.InteractionResponseType) *Response {
 	response.InteractionResponse.Type = discordgo.InteractionResponseType(responseType)
 
 	return response

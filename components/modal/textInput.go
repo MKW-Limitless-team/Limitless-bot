@@ -1,25 +1,36 @@
-package embed
+package modal
 
 import (
 	"github.com/bwmarrin/discordgo"
 )
 
 type TextInput struct {
-	*discordgo.TextInput
+	discordgo.TextInput
 }
 
 func newTextInput() *TextInput {
-	return &TextInput{&discordgo.TextInput{}}
+	return &TextInput{discordgo.TextInput{}}
 }
 
 func NewTextField(label string, id string, placeholder string, required bool) *TextInput {
-	return newTextInput().
+	textInput := newTextInput().
+		SetLabel(label).
+		SetCustomID(id).
+		SetPlaceholder(placeholder).
+		SetRequired(required).
 		SetStyle(discordgo.TextInputShort)
+
+	return textInput
 }
 
-func NewTextArea() *TextInput {
-	return newTextInput().
+func NewTextArea(label string, id string, required bool) *TextInput {
+	textInput := newTextInput().
+		SetLabel(label).
+		SetCustomID(id).
+		SetRequired(required).
 		SetStyle(discordgo.TextInputParagraph)
+
+	return textInput
 }
 
 func (textInput *TextInput) SetLabel(label string) *TextInput {

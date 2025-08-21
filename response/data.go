@@ -21,8 +21,28 @@ func NewResponseData(content string) *Data {
 	return responseData
 }
 
+func NewFormData(title string, id string) *Data {
+	responseData := newData().
+		SetTitle(title).
+		SetCustomID(id)
+
+	return responseData
+}
+
 func (data *Data) SetContent(content string) *Data {
 	data.Content = content
+
+	return data
+}
+
+func (data *Data) SetCustomID(id string) *Data {
+	data.CustomID = id
+
+	return data
+}
+
+func (data *Data) SetTitle(title string) *Data {
+	data.Title = title
 
 	return data
 }
@@ -37,14 +57,8 @@ func (data *Data) AddEmbed(embed *embed.Embed) *Data {
 	return data
 }
 
-func (data *Data) AddActionRow(actionRow *embed.ActionRow) *Data {
-	data.Components = append(data.Components, actionRow)
+func (data *Data) AddComponent(component discordgo.MessageComponent) *Data {
+	data.Components = append(data.Components, component)
 
 	return data
 }
-
-// func (data *Data) AddComponent(content string) *Data {
-// 	data.Content = content
-
-// 	return data
-// }
