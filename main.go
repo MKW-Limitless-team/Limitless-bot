@@ -23,15 +23,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+
+	events.RegisterEvents(session)
+
 	err = session.Open()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	events.RegisterEvents(session)
-	commands.RegisterCommands(session)
-
-	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+	err = commands.RegisterCommands(session)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	defer session.Close()
 
