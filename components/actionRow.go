@@ -1,8 +1,6 @@
-package embed
+package components
 
 import (
-	"limitless-bot/components/button"
-
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -14,8 +12,8 @@ func NewActionRow() *ActionRow {
 	return &ActionRow{&discordgo.ActionsRow{}}
 }
 
-func (actionRow *ActionRow) AddEmbed(button *button.Button) *ActionRow {
-	actionRow.Components = append(actionRow.Components, button)
+func (actionRow *ActionRow) AddComponent(component discordgo.MessageComponent) *ActionRow {
+	actionRow.Components = append(actionRow.Components, component)
 
 	return actionRow
 }

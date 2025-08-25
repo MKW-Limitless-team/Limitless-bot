@@ -8,12 +8,12 @@ type Embed struct {
 	*discordgo.MessageEmbed
 }
 
-func NewEmbed() *Embed {
+func newEmbed() *Embed {
 	return &Embed{&discordgo.MessageEmbed{}}
 }
 
 func NewRichEmbed(title string, description string, color int) *Embed {
-	richEmbed := NewEmbed().
+	richEmbed := newEmbed().
 		SetTitle(title).
 		SetDescription(description).
 		SetColor(color).

@@ -5,7 +5,7 @@ import "sort"
 type PlayerData struct {
 	Name       string
 	FriendCode string
-	DiscordId  string
+	DiscordID  string
 	Mmr        float64
 	Mii        string
 }

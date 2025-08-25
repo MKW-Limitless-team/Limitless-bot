@@ -8,12 +8,12 @@ type Command struct {
 	*discordgo.ApplicationCommand
 }
 
-func NewCommand() *Command {
+func newCommand() *Command {
 	return &Command{&discordgo.ApplicationCommand{}}
 }
 
 func NewApplicationCommand(name string, description string, commandType discordgo.ApplicationCommandType) *Command {
-	botCommand := NewCommand().
+	botCommand := newCommand().
 		SetName(name).
 		SetDescription(description).
 		SetApplicationCommandType(commandType)

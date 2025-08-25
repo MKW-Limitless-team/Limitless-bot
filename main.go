@@ -17,21 +17,25 @@ var (
 )
 
 func main() {
-	TOKEN = os.Getenv("SQUIRE_TOKEN")
+	TOKEN = os.Getenv("BEPIS_TOKEN")
 	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+
+	events.RegisterEvents(session)
 
 	err = session.Open()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	events.RegisterEvents(session)
-	commands.RegisterCommands(session)
-
-	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+	err = commands.RegisterCommands(session)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	defer session.Close()
 

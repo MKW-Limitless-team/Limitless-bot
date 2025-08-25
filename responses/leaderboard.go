@@ -2,6 +2,7 @@ package responses
 
 import (
 	"fmt"
+	"limitless-bot/components"
 	"limitless-bot/components/button"
 	e "limitless-bot/components/embed"
 	"limitless-bot/response"
@@ -23,7 +24,7 @@ func LeaderBoardResponse(session *discordgo.Session, interaction *discordgo.Inte
 
 	response := response.
 		NewMessageResponse().
-		SetInteractionResponseData(LeaderBoardData(guild, page))
+		SetResponseData(LeaderBoardData(guild, page))
 
 	return response.InteractionResponse
 }
@@ -47,7 +48,6 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 			player := playerData[index]
 
 			embed.AddField("", fmt.Sprintf("**%d.** %s: %5.f", index+1, player.Name, player.Mmr), false)
-			println(fmt.Sprintf("**%d.** %s:%5.f", index+1, player.Name, player.Mmr))
 		} else {
 			end = true
 			embed.AddField("End", ":rewind: :regional_indicator_b: :regional_indicator_a: :regional_indicator_c: :regional_indicator_k: ", false)
@@ -57,17 +57,17 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 
 	data.AddEmbed(embed)
 
-	actionRow := e.NewActionRow()
+	actionRow := components.NewActionRow()
 
 	previousButton := button.NewBasicButton("Previous", PREVIOUS_BUTTON, discordgo.PrimaryButton, (page == 0))
 	homeButton := button.NewBasicButton("Home", HOME_BUTTON, discordgo.SecondaryButton, false)
 	nextButton := button.NewBasicButton("Next", NEXT_BUTTON, discordgo.PrimaryButton, end)
 
-	actionRow.Components = append(actionRow.Components, previousButton)
-	actionRow.Components = append(actionRow.Components, homeButton)
-	actionRow.Components = append(actionRow.Components, nextButton)
+	actionRow.AddComponent(previousButton)
+	actionRow.AddComponent(homeButton)
+	actionRow.AddComponent(nextButton)
 
-	data.AddActionRow(actionRow)
+	data.AddComponent(actionRow)
 
 	return data.InteractionResponseData
 }
@@ -81,7 +81,7 @@ func IncPage(session *discordgo.Session, interaction *discordgo.InteractionCreat
 
 	if err != nil {
 		return response.NewMessageResponse().
-			SetInteractionResponseData(response.NewResponseData("Error changing page").InteractionResponseData).InteractionResponse
+			SetResponseData(response.NewResponseData("Error changing page").InteractionResponseData).InteractionResponse
 	}
 
 	return LeaderBoardResponse(session, interaction, page)

@@ -12,7 +12,7 @@ import (
 func HelpResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.
 		NewMessageResponse().
-		SetInteractionResponseData(HelpData(session, interaction))
+		SetResponseData(HelpData(session, interaction))
 
 	return response.InteractionResponse
 }
