@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	TOKEN = os.Getenv("SQUIRE_TOKEN")
+	TOKEN = os.Getenv("BEPIS_TOKEN")
 	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
 		log.Fatal(err)
