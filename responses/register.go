@@ -50,6 +50,7 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 
 	ignID := "ign"
 	fcID := "fc"
+  
 	userID := interaction.Member.User.ID
 
 	submitData := interaction.ModalSubmitData()
