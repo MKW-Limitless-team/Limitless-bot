@@ -26,11 +26,14 @@ func FormData() *discordgo.InteractionResponseData {
 	data := response.NewFormData("Registration Form", REGISTRATION_FORM)
 
 	actionRow := components.NewActionRow()
-	textfield := modal.NewTextField("In-Game Name", "ign", "In-game name", true)
-
+	ign := modal.NewTextField("In-Game name", "ign", "In-game name", true)
+	actionRow.AddComponent(ign)
 	data.AddComponent(actionRow)
 
-	actionRow.AddComponent(textfield)
+	actionRow = components.NewActionRow()
+	fc := modal.NewTextField("Friend code", "fc", "Friend code", true)
+	data.AddComponent(actionRow)
+	actionRow.AddComponent(fc)
 
 	return data.InteractionResponseData
 }
@@ -45,17 +48,19 @@ func RegistrationResponse(interaction *discordgo.InteractionCreate) *discordgo.I
 func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	var data *response.Data
 
-	fieldID := "ign"
+	ignID := "ign"
+	fcID := "fc"
 	userID := interaction.Member.User.ID
 
 	submitData := interaction.ModalSubmitData()
 
-	value, err := utils.GetSubmitDataValueByID(submitData, fieldID)
+	ign, _ := utils.GetSubmitDataValueByID(submitData, ignID)
+	fc, err := utils.GetSubmitDataValueByID(submitData, fcID)
 
 	if err != nil {
-		data = response.NewResponseData("User registered")
+		data = response.NewResponseData("User not registered")
 	} else {
-		data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s", userID, value))
+		data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s \n%s", userID, ign, fc))
 	}
 
 	return data.InteractionResponseData
