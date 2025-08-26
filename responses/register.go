@@ -17,12 +17,12 @@ var (
 
 func RegistrationFormResponse() *discordgo.InteractionResponse {
 	response := response.NewModalResponse().
-		SetResponseData(FormData())
+		SetResponseData(RegistrationFormData())
 
 	return response.InteractionResponse
 }
 
-func FormData() *discordgo.InteractionResponseData {
+func RegistrationFormData() *discordgo.InteractionResponseData {
 	data := response.NewFormData("Registration Form", REGISTRATION_FORM)
 
 	actionRow := components.NewActionRow()
@@ -50,7 +50,7 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 
 	ignID := "ign"
 	fcID := "fc"
-  
+
 	userID := interaction.Member.User.ID
 
 	submitData := interaction.ModalSubmitData()
