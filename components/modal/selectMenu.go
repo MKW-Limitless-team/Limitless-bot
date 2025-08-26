@@ -42,3 +42,9 @@ func (selectMenu *SelectMenu) SetCustomID(customID string) *SelectMenu {
 
 	return selectMenu
 }
+
+func (selectMenu *SelectMenu) AddMenuOption(menuOption SelectMenuOption) *SelectMenu {
+	selectMenu.Options = append(selectMenu.Options, menuOption.SelectMenuOption)
+
+	return selectMenu
+}
