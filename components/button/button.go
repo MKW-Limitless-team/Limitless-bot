@@ -1,7 +1,7 @@
 package button
 
 import (
-	em "limitless-bot/components/button/emoji"
+	em "limitless-bot/components/emoji"
 
 	"github.com/bwmarrin/discordgo"
 )
