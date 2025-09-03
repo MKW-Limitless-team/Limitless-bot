@@ -7,6 +7,7 @@ import (
 	e "limitless-bot/components/embed"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"limitless-bot/utils/ltrc"
 	"strconv"
 	"strings"
 
@@ -37,7 +38,7 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	pageNum := page + 1
 	embed.SetFooter(fmt.Sprintf("Page : %d", pageNum), "")
 
-	playerData := utils.SortByMMR(utils.GetPlayerData())
+	playerData := ltrc.SortByMMR(utils.GetPlayerData())
 	playersPerPage := 10
 	start := (page) * playersPerPage
 	end := false
