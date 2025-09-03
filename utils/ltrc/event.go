@@ -3,12 +3,12 @@ package ltrc
 import "github.com/google/uuid"
 
 type Event struct {
-	Event  uuid.UUID
+	ID     uuid.UUID
 	Format Format
-	Racers Racer
 }
 
 type Racer struct {
+	Event uuid.UUID
 	Name  string
 	Mmr   float64
 	Score float64
