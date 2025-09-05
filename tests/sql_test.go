@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"testing"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/ncruces/go-sqlite3/driver"
+	_ "github.com/ncruces/go-sqlite3/embed"
+	_ "github.com/ncruces/go-sqlite3/vfs/memdb"
 )
 
 func TestSQLOperations(t *testing.T) {
@@ -14,18 +16,21 @@ func TestSQLOperations(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		defer db.Close()
 
-		sqlStmt := `
-			CREATE TABLE IF NOT EXISTS users (
-				id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-				name TEXT,
-				age INTEGER
-			);
-		`
-		_, err = db.Exec(sqlStmt)
+		rows, err := db.Query(`SELECT id FROM events`)
 		if err != nil {
 			t.Fatal(err)
 		}
+		defer rows.Close()
 
+		for rows.Next() {
+			var (
+				name string
+			)
+
+			rows.Scan(&name)
+			println(name)
+		}
 	})
 }
