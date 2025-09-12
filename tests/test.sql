@@ -1,8 +1,0 @@
-CREATE TABLE IF NOT EXISTS events (
-    id TEXT NOT NULL PRIMARY KEY
-);
-
-INSERT INTO events (id)
-VALUES ("e2")
-
-SELECT id FROM events
