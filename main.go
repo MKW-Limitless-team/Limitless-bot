@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"limitless-bot/commands"
 	"limitless-bot/events"
@@ -10,10 +11,14 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	_ "github.com/ncruces/go-sqlite3/driver"
+	_ "github.com/ncruces/go-sqlite3/embed"
+	_ "github.com/ncruces/go-sqlite3/vfs/memdb"
 )
 
 var (
 	TOKEN string
+	DB    *sql.DB
 )
 
 func main() {
@@ -37,6 +42,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	DB, err := sql.Open("sqlite3", "./ltrc.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer DB.Close()
 	defer session.Close()
 
 	sc := make(chan os.Signal, 1)
