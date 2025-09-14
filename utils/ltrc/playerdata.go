@@ -6,7 +6,7 @@ type PlayerData struct {
 	Name       string
 	FriendCode string
 	DiscordID  string
-	Mmr        float64
+	Mmr        int64
 	Mii        string
 }
 
@@ -18,7 +18,7 @@ type Season struct {
 
 type Participant struct {
 	Name string
-	Mmr  float64
+	Mmr  int64
 }
 
 type byMmr []*PlayerData

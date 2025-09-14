@@ -40,7 +40,7 @@ func GetPlayerData() []*ltrc.PlayerData {
 					playerdata.Name = str
 				}
 
-				if mmr, ok := row[3].(float64); ok {
+				if mmr, ok := row[3].(int64); ok {
 					playerdata.Mmr = mmr
 				}
 

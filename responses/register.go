@@ -59,7 +59,7 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 	fc, err := utils.GetSubmitDataValueByID(submitData, fcID)
 
 	if err != nil {
-		data = response.NewResponseData("User not registered")
+		data = response.NewResponseData("Error, user wasn't registered")
 	} else {
 		data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s \nFriend code: %s", userID, ign, fc))
 	}
