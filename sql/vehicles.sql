@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS vehicles (name TEXT, size TEXT);
+    IF NOT EXISTS vehicles (name TEXT PRIMARY KEY, size TEXT);
 
 INSERT INTO
     vehicles (name, size)
@@ -40,3 +40,5 @@ VALUES
     ('Shooting Star', 'L'),
     ('Spear', 'L'),
     ('Phantom', 'L');
+
+-- DROP TABLE vehicles

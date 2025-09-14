@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS glitch (track TEXT);
+    IF NOT EXISTS glitch (track TEXT PRIMARY KEY);
 
 INSERT INTO
     glitch (track)
@@ -30,3 +30,5 @@ VALUES
     ('Spooky Swamp'),
     ('Wii Rainbow Road'),
     ('Cosmic Causeway');
+
+-- DROP TABLE glitch

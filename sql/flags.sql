@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS flags (emoji TEXT, name TEXT);
+    IF NOT EXISTS flags (emoji TEXT PRIMARY KEY, name TEXT);
 
 INSERT INTO
     flags (emoji, name)
@@ -12,7 +12,6 @@ VALUES
     ('🇩🇿', 'Algeria'),
     ('🇦🇸', 'American Samoa'),
     ('🇦🇩', 'Andorra'),
-    ('🇦🇴', 'Angola'),
     ('🇦🇮', 'Anguilla'),
     ('🇦🇶', 'Antarctica'),
     ('🇦🇬', 'Antigua and Barbuda'),
@@ -20,7 +19,6 @@ VALUES
     ('🇦🇲', 'Armenia'),
     ('🇦🇼', 'Aruba'),
     ('🇦🇺', 'Australia'),
-    ('🇦🇹', 'Austria'),
     ('🇦🇿', 'Azerbaijan'),
     ('🇧🇸', 'Bahamas'),
     ('🇧🇭', 'Bahrain'),
@@ -74,7 +72,6 @@ VALUES
     ('🇬🇶', 'Equatorial Guinea'),
     ('🇪🇷', 'Eritrea'),
     ('🇪🇪', 'Estonia'),
-    ('🇸🇿', 'Eswatini'),
     ('🇪🇹', 'Ethiopia'),
     ('🇫🇰', 'Falkland Islands'),
     ('🇫🇴', 'Faroe Islands'),
@@ -101,7 +98,6 @@ VALUES
     ('🇬🇼', 'Guinea-Bissau'),
     ('🇬🇾', 'Guyana'),
     ('🇭🇹', 'Haiti'),
-    ('🇻🇦', 'Holy See'),
     ('🇭🇳', 'Honduras'),
     ('🇭🇰', 'Hong Kong'),
     ('🇭🇺', 'Hungary'),
@@ -252,3 +248,5 @@ VALUES
     ('🇾🇪', 'Yemen'),
     ('🇿🇲', 'Zambia'),
     ('🇿🇼', 'Zimbabwe');
+
+-- DROP TABLE flags

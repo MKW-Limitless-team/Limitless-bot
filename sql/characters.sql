@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS characters (name TEXT, size TEXT);
+    IF NOT EXISTS characters (name TEXT PRIMARY KEY, size TEXT);
 
 INSERT INTO
     characters (name, size)
@@ -29,3 +29,5 @@ VALUES
     ('Rosalina', 'L'),
     ('Dry Bowser', 'L'),
     ('Mii', '');
+
+-- DROP TABLE characters

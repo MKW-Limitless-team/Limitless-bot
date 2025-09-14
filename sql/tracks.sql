@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS tracks (name TEXT, cup TEXT);
+    IF NOT EXISTS tracks (name TEXT PRIMARY KEY, cup TEXT);
 
 INSERT INTO
     tracks (name, cup)
@@ -100,3 +100,5 @@ VALUES
     ('Aqua Dungeon', 'RAINBOW CUP'),
     ('Garden of Dreams', 'RAINBOW CUP'),
     ('Bowser''s Termination Station', 'RAINBOW CUP');
+
+-- DROP TABLE tracks

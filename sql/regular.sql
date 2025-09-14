@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS regular (track TEXT);
+    IF NOT EXISTS regular (track TEXT PRIMARY KEY);
 
 INSERT INTO
     regular (track)
@@ -100,3 +100,5 @@ VALUES
     ('Aqua Dungeon'),
     ('Garden of Dreams'),
     ('Bowser''s Termination Station');
+
+-- DROP TABLE regular

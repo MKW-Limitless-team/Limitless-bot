@@ -1,10 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"limitless-bot/commands"
 	"limitless-bot/events"
-	"limitless-bot/globals"
 	"log"
 	"os"
 	"os/signal"
@@ -16,9 +16,14 @@ import (
 	_ "github.com/ncruces/go-sqlite3/vfs/memdb"
 )
 
+var (
+	TOKEN string
+	DB    *sql.DB
+)
+
 func main() {
-	globals.Init()
-	session, err := discordgo.New(fmt.Sprintf("Bot %s", globals.TOKEN))
+	TOKEN = os.Getenv("BEPIS_TOKEN")
+	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +42,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	defer globals.DB.Close()
 	defer session.Close()
 
 	sc := make(chan os.Signal, 1)

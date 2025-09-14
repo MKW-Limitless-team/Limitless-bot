@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS shortcut (track TEXT);
+    IF NOT EXISTS shortcut (track TEXT PRIMARY KEY);
 
 INSERT INTO
     shortcut (track)
@@ -21,3 +21,5 @@ VALUES
     ('Banished Keep'),
     ('Thump Bump Forest'),
     ('Wii Bowser''s Castle');
+
+-- DROP TABLE shortcut

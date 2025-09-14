@@ -6,6 +6,7 @@ import (
 	"limitless-bot/components/modal"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"limitless-bot/utils/db"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -56,10 +57,12 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 	submitData := interaction.ModalSubmitData()
 
 	ign, _ := utils.GetSubmitDataValueByID(submitData, ignID)
-	fc, err := utils.GetSubmitDataValueByID(submitData, fcID)
+	fc, _ := utils.GetSubmitDataValueByID(submitData, fcID)
+
+	err := db.RegisterPlayer(ign, fc, userID)
 
 	if err != nil {
-		data = response.NewResponseData("Error, user wasn't registered")
+		data = response.NewResponseData("User already registered")
 	} else {
 		data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s \nFriend code: %s", userID, ign, fc))
 	}
