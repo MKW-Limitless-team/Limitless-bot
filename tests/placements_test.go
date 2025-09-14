@@ -11,7 +11,7 @@ import (
 	_ "github.com/ncruces/go-sqlite3/vfs/memdb"
 )
 
-func TimeTrialOperations(t *testing.T) {
+func TestPlacements(t *testing.T) {
 
 	db, err := sql.Open("sqlite3", "./test.db")
 	if err != nil {
@@ -68,6 +68,16 @@ func TimeTrialOperations(t *testing.T) {
 				&placement.DriftType, &placement.Category)
 
 			fmt.Println(placement)
+		}
+	})
+
+	t.Run("drop", func(t *testing.T) {
+		query := `DROP TABLE placements`
+
+		_, err := db.Exec(query)
+
+		if err != nil {
+			t.Fatal(err)
 		}
 	})
 }
