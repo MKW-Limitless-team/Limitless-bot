@@ -28,7 +28,8 @@ func TestPlacements(t *testing.T) {
 					character TEXT,
 					vehicle TEXT,
 					drift_type TEXT,
-					category TEXT
+					category TEXT,
+					approved BOOLEAN
 				);`
 
 		_, err := db.Exec(query)
@@ -39,10 +40,10 @@ func TestPlacements(t *testing.T) {
 	})
 
 	t.Run("insert", func(t *testing.T) {
-		query := `INSERT INTO placements (track, discord_id, flag, time, character, vehicle, drift_type, category)
-					VALUES (?,?,?,?,?,?,?,?)`
+		query := `INSERT INTO placements (track, discord_id, flag, time, character, vehicle, drift_type, category, approved)
+					VALUES (?,?,?,?,?,?,?,?,?)`
 
-		insert, err := db.Exec(query, "Wii Mushroom Gorge", "1234567890", "🇮🇪", "2:13.340", "Mario", "Standard Bike M", "manual", "regular")
+		insert, err := db.Exec(query, "Wii Mushroom Gorge", "1234567890", "🇮🇪", "2:13.340", "Mario", "Standard Bike M", "manual", "regular", false)
 
 		if err != nil {
 			t.Fatal(err)
@@ -52,7 +53,7 @@ func TestPlacements(t *testing.T) {
 	})
 
 	t.Run("select", func(t *testing.T) {
-		query := `SELECT track, discord_id, flag, time, character, vehicle, drift_type, category 
+		query := `SELECT track, discord_id, flag, time, character, vehicle, drift_type, category, approved
 					FROM placements`
 		rows, err := db.Query(query)
 		if err != nil {

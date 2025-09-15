@@ -15,17 +15,6 @@ type Placement struct {
 	Vehicle   string
 	DriftType string
 	Category  string
-}
-
-type Submission struct {
-	Track     string
-	DiscordID string
-	Flag      string
-	Time      string
-	Character string
-	Vehicle   string
-	DriftType string
-	Category  string
 	Accepted  bool
 }
 
