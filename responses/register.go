@@ -62,7 +62,10 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 	err := db.RegisterPlayer(ign, fc, userID)
 
 	if err != nil {
-		data = response.NewResponseData("User already registered")
+		switch err.Error() {
+		case "sqlite3: constraint failed: UNIQUE constraint failed: playerdata.discord_id":
+			data = response.NewResponseData("User already registered")
+		}
 	} else {
 		data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s \nFriend code: %s", userID, ign, fc))
 	}
