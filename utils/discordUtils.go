@@ -29,3 +29,13 @@ func GetSubmitDataValueByID(submitData discordgo.ModalSubmitInteractionData, id 
 
 	return value, fmt.Errorf("No field found for ID: %s", id)
 }
+
+func GetAttachment(interaction *discordgo.InteractionCreate) *discordgo.MessageAttachment {
+	var file *discordgo.MessageAttachment
+
+	for _, attachment := range interaction.ApplicationCommandData().Resolved.Attachments {
+		file = attachment
+	}
+
+	return file
+}
