@@ -28,6 +28,25 @@ VALUES
     ('King Boo', 'L'),
     ('Rosalina', 'L'),
     ('Dry Bowser', 'L'),
-    ('Mii', '');
-
--- DROP TABLE characters
+    ('Medium Mii', 'M'),
+    ('Small Mii', 'S'),
+    ('Large Mii', 'L'),
+    ('Small Mii Outfit A (Male)', 'S'),
+    ('Small Mii Outfit A (Female)', 'S'),
+    ('Small Mii Outfit B (Male)', 'S'),
+    ('Small Mii Outfit B (Female)', 'S'),
+    ('Small Mii Outfit C (Male)', 'S'),
+    ('Small Mii Outfit C (Female)', 'S'),
+    ('Medium Mii Outfit A (Male)', 'M'),
+    ('Medium Mii Outfit A (Female)', 'M'),
+    ('Medium Mii Outfit B (Male)', 'M'),
+    ('Medium Mii Outfit B (Female)', 'M'),
+    ('Medium Mii Outfit C (Male)', 'M'),
+    ('Medium Mii Outfit C (Female)', 'M'),
+    ('Large Mii Outfit A (Male)', 'L'),
+    ('Large Mii Outfit A (Female)', 'L'),
+    ('Large Mii Outfit B (Male)', 'L'),
+    ('Large Mii Outfit B (Female)', 'L'),
+    ('Large Mii Outfit C (Male)', 'L'),
+    ('Large Mii Outfit C (Female)', 'L')
+    -- DROP TABLE characters
