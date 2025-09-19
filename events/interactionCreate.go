@@ -19,7 +19,7 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		case commands.LEADERBOARD_COMMAND:
 			response = responses.LeaderBoardResponse(session, interaction, 0)
 		case commands.REGISTER_COMMAND:
-			response = responses.RegistrationFormResponse()
+			response = responses.RegistrationResponse(session, interaction)
 		case commands.SUBMIT_TIME_COMMAND:
 			response = responses.SubmitTimeResponse(session, interaction)
 		}
@@ -35,8 +35,6 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		response.Type = discordgo.InteractionResponseUpdateMessage
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
 		switch customID := interaction.ModalSubmitData().CustomID; customID {
-		case responses.REGISTRATION_FORM:
-			response = responses.RegistrationResponse(interaction)
 		}
 	} else {
 		response = &discordgo.InteractionResponse{

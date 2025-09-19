@@ -10,16 +10,16 @@ type PlayerData struct {
 	Mii        string
 }
 
-type Season struct {
-	Name         string
-	Active       bool
-	Participants Participant
-}
+// type Season struct {
+// 	Name         string
+// 	Active       bool
+// 	Participants Participant
+// }
 
-type Participant struct {
-	Name string
-	Mmr  int64
-}
+// type Participant struct {
+// 	Name string
+// 	Mmr  int64
+// }
 
 type byMmr []*PlayerData
 

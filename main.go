@@ -1,10 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"limitless-bot/commands"
 	"limitless-bot/events"
+	"limitless-bot/globals"
 	"log"
 	"os"
 	"os/signal"
@@ -17,12 +17,10 @@ import (
 )
 
 var (
-	TOKEN string
-	DB    *sql.DB
+	TOKEN = os.Getenv("BEPIS_TOKEN")
 )
 
 func main() {
-	TOKEN = os.Getenv("BEPIS_TOKEN")
 	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
 		log.Fatal(err)
@@ -42,7 +40,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	globals.Initialize(globals.SQLITEFILE)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	defer session.Close()
+	defer globals.GetConnection().Close()
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)

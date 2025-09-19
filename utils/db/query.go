@@ -7,7 +7,13 @@ type SqlQuery struct {
 }
 
 func NewQuery() *SqlQuery {
-	return &SqlQuery{}
+	return &SqlQuery{text: ""}
+}
+
+func (query *SqlQuery) From(table string) *SqlQuery {
+	query.text += "FROM " + table + "\n"
+
+	return query
 }
 
 func (query *SqlQuery) Select(columns ...string) *SqlQuery {
@@ -27,12 +33,6 @@ func (query *SqlQuery) Select(columns ...string) *SqlQuery {
 
 	text += "\n"
 	query.text += text
-
-	return query
-}
-
-func (query *SqlQuery) From(table string) *SqlQuery {
-	query.text += "FROM " + table + "\n"
 
 	return query
 }

@@ -6,6 +6,25 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+func GetArgument(options []*discordgo.ApplicationCommandInteractionDataOption, name string) *discordgo.ApplicationCommandInteractionDataOption {
+	for _, option := range options {
+		if option.Name == name {
+			return option
+		}
+	}
+	return nil
+}
+
+func GetAttachment(interaction *discordgo.InteractionCreate) *discordgo.MessageAttachment {
+	var file *discordgo.MessageAttachment
+
+	for _, attachment := range interaction.ApplicationCommandData().Resolved.Attachments {
+		file = attachment
+	}
+
+	return file
+}
+
 func GetGuild(session *discordgo.Session, guildID string) *discordgo.Guild {
 	guild, _ := session.Guild(guildID)
 	return guild
@@ -28,14 +47,4 @@ func GetSubmitDataValueByID(submitData discordgo.ModalSubmitInteractionData, id 
 	}
 
 	return value, fmt.Errorf("No field found for ID: %s", id)
-}
-
-func GetAttachment(interaction *discordgo.InteractionCreate) *discordgo.MessageAttachment {
-	var file *discordgo.MessageAttachment
-
-	for _, attachment := range interaction.ApplicationCommandData().Resolved.Attachments {
-		file = attachment
-	}
-
-	return file
 }
