@@ -28,7 +28,9 @@ func TestPlacements(t *testing.T) {
 						track TEXT,
 						discord_id TEXT,
 						flag TEXT,
-						time TEXT,
+						minutes INTEGER,
+						seconds INTEGER,
+						milliseconds INTEGER,
 						character TEXT,
 						vehicle TEXT,
 						drift_type TEXT,
@@ -45,12 +47,12 @@ func TestPlacements(t *testing.T) {
 	})
 
 	t.Run("insert", func(t *testing.T) {
-		query := `INSERT INTO placements (track, discord_id, flag, time, 
+		query := `INSERT INTO placements (track, discord_id, flag, minutes, seconds, milliseconds,
 					character, vehicle, drift_type, category, approved)
-					VALUES (?,?,?,?,?,?,?,?,?)`
+					VALUES (?,?,?,?,?,?,?,?,?,?,?)`
 
-		insert, err := db.Exec(query, "Wii Mushroom Gorge", "1234567890", "🇮🇪",
-			"2:13.340", "Mario", "Standard Bike M",
+		insert, err := db.Exec(query, "Wii Mushroom Gorge", "123453457890", "🇮🇪", 2, 13, 340,
+			"Mario", "Standard Bike M",
 			"MANUAL", "regular", false)
 
 		if err != nil {
@@ -61,7 +63,7 @@ func TestPlacements(t *testing.T) {
 	})
 
 	t.Run("select", func(t *testing.T) {
-		query := `SELECT track, discord_id, flag, time, 
+		query := `SELECT track, discord_id, flag, minutes, seconds, milliseconds,
 					character, vehicle, drift_type, category, approved
 					FROM placements`
 		rows, err := db.Query(query)
@@ -74,8 +76,9 @@ func TestPlacements(t *testing.T) {
 			var placement ltrc.Placement
 
 			rows.Scan(&placement.Track, &placement.DiscordID, &placement.Flag,
-				&placement.Time, &placement.Character, &placement.Vehicle,
-				&placement.DriftType, &placement.Category)
+				&placement.Minutes, &placement.Seconds, &placement.Milliseconds,
+				&placement.Character, &placement.Vehicle,
+				&placement.DriftType, &placement.Category, &placement.Approved)
 
 			fmt.Println(placement)
 		}
@@ -91,13 +94,12 @@ func TestPlacements(t *testing.T) {
 		readable := r.ConvertRkg(rkg)
 		header := readable.Header
 
-		query := `INSERT INTO placements (track, discord_id, flag, time, 
+		query := `INSERT INTO placements (track, discord_id, flag, minutes, seconds, milliseconds,
 					character, vehicle, drift_type, category, approved)
-					VALUES (?,?,?,?,?,?,?,?,?)`
+					VALUES (?,?,?,?,?,?,?,?,?,?,?)`
 
-		insert, err := db.Exec(query, header.Track, "1234567890", "🇮🇪",
-			fmt.Sprintf("%d:%d.%d", header.FinishTime.Minutes,
-				header.FinishTime.Seconds, header.FinishTime.Milliseconds),
+		insert, err := db.Exec(query, header.Track, "123451247890", "🇮🇪",
+			header.FinishTime.Minutes, header.FinishTime.Seconds, header.FinishTime.Milliseconds,
 			header.Character, header.Vehicle,
 			header.DriftType, "regular", false)
 
