@@ -6,8 +6,10 @@ import (
 	"limitless-bot/response"
 	"limitless-bot/utils"
 	"net/http"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	r "github.com/nwoik/generate-mii/rkg"
 )
 
 func SubmitTimeResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
@@ -26,17 +28,24 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 	resp, err := http.Get(file.URL)
 
 	if err != nil {
-		return response.NewResponseData(fmt.Sprint(err.Error())).InteractionResponseData
+		return response.NewResponseData("Failed to get file").InteractionResponseData
 	}
 
-	rkg, err := io.ReadAll(resp.Body)
+	if !strings.HasSuffix(file.Filename, ".rkg") {
+		return response.NewResponseData("The file must be a **.rkg** file").InteractionResponseData
+	}
+
+	rkgData, err := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
 	if err != nil {
-		return response.NewResponseData(fmt.Sprint(err.Error())).InteractionResponseData
+		return response.NewResponseData("Error reading file").InteractionResponseData
 	}
 
-	fmt.Printf("%b\n", rkg)
+	rkg := r.ParseRKG(rkgData)
+	readable := r.ConvertRkg(rkg)
+
+	fmt.Println(readable.Header)
 
 	return data.InteractionResponseData
 }
