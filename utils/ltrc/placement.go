@@ -17,6 +17,7 @@ type Placement struct {
 	DriftType    string
 	Category     string
 	Url          string
+	CRC          uint32
 	Approved     bool
 }
 

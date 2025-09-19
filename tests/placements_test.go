@@ -3,6 +3,7 @@ package tests
 import (
 	"database/sql"
 	"fmt"
+	"limitless-bot/utils/crc"
 	"limitless-bot/utils/ltrc"
 	"os"
 	"testing"
@@ -36,6 +37,7 @@ func TestPlacements(t *testing.T) {
 						drift_type TEXT,
 						category TEXT,
         				url TEXT,
+        				crc INTEGER,
 						approved BOOLEAN
 					);`
 
@@ -48,12 +50,12 @@ func TestPlacements(t *testing.T) {
 
 	t.Run("insert", func(t *testing.T) {
 		query := `INSERT INTO placements (track, discord_id, flag, minutes, seconds, milliseconds,
-					character, vehicle, drift_type, category, approved)
-					VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+					character, vehicle, drift_type, category, crc, approved)
+					VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
 
 		insert, err := db.Exec(query, "Wii Mushroom Gorge", "123453457890", "🇮🇪", 2, 13, 340,
 			"Mario", "Standard Bike M",
-			"MANUAL", "regular", false)
+			"MANUAL", "regular", 0, false)
 
 		if err != nil {
 			t.Fatal(err)
@@ -91,17 +93,18 @@ func TestPlacements(t *testing.T) {
 		}
 
 		rkg := r.ParseRKG(file)
+		crc := crc.CRC(file)
 		readable := r.ConvertRkg(rkg)
 		header := readable.Header
 
 		query := `INSERT INTO placements (track, discord_id, flag, minutes, seconds, milliseconds,
-					character, vehicle, drift_type, category, approved)
-					VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+					character, vehicle, drift_type, category, crc, approved)
+					VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
 
 		insert, err := db.Exec(query, header.Track, "123451247890", "🇮🇪",
 			header.FinishTime.Minutes, header.FinishTime.Seconds, header.FinishTime.Milliseconds,
 			header.Character, header.Vehicle,
-			header.DriftType, "regular", false)
+			header.DriftType, "regular", crc, false)
 
 		if err != nil {
 			t.Fatal(err)
