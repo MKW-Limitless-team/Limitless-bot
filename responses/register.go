@@ -2,18 +2,15 @@ package responses
 
 import (
 	"fmt"
-	"io"
 	"limitless-bot/response"
 	"limitless-bot/utils"
 	"limitless-bot/utils/db"
-	"net/http"
-	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	REGISTRATION_FORM    = "registration_form"
+	// REGISTRATION_FORM    = "registration_form"
 	REGISTRATON_RESPONSE = "registration_response"
 )
 
@@ -50,38 +47,13 @@ func RegistrationResponse(session *discordgo.Session, interaction *discordgo.Int
 func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	var data *response.Data
 
-	file := utils.GetAttachment(interaction)
-	var mii string
-	miiData := []byte{}
-	if file != nil {
-		resp, err := http.Get(file.URL)
-
-		if err != nil {
-			return response.NewResponseData("Failed to get file").InteractionResponseData
-		}
-
-		if !strings.HasSuffix(file.Filename, ".miigx") {
-			return response.NewResponseData("The file must be a **.miigx** file").InteractionResponseData
-		}
-
-		data, err := io.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		miiData = append(miiData, data...)
-
-		if err != nil {
-			return response.NewResponseData("Failed to mii").InteractionResponseData
-		}
-
-	}
-	mii = string(miiData)
-
 	args := interaction.ApplicationCommandData().Options
 
 	userID := interaction.Member.User.ID
 	ign := utils.GetArgument(args, "ign").StringValue()
 	fc := utils.GetArgument(args, "fc").StringValue()
 
-	err := db.RegisterPlayer(ign, fc, userID, mii)
+	err := db.RegisterPlayer(ign, fc, userID)
 
 	if err != nil {
 		switch err.Error() {

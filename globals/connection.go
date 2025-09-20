@@ -8,7 +8,7 @@ var (
 )
 
 func Initialize(filePath string) error {
-	db, err := sql.Open("sqlite3", "./test.db")
+	db, err := sql.Open("sqlite3", SQLITEFILE)
 	if err != nil {
 		return err
 	}

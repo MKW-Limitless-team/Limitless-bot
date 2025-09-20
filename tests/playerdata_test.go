@@ -59,7 +59,7 @@ func TestPlayerData(t *testing.T) {
 		defer rows.Close()
 
 		for rows.Next() {
-			var playerData ltrc.PlayerData
+			playerData := &ltrc.PlayerData{}
 
 			rows.Scan(&playerData.Name, &playerData.FriendCode, &playerData.DiscordID, &playerData.Mmr, &playerData.Mii)
 			fmt.Println(playerData)

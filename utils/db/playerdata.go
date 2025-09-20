@@ -1,22 +1,29 @@
 package db
 
 import (
-	"database/sql"
-	"log"
+	"fmt"
+	"limitless-bot/globals"
 )
 
-func RegisterPlayer(name string, friend_code string, discord_id string, mii string) error {
-	query := `INSERT INTO playerdata (name, friend_code, discord_id, mii)
-					VALUES (?, ?, ?, ?)`
+func RegisterPlayer(name string, friend_code string, discord_id string) error {
+	query := `INSERT INTO playerdata (name, friend_code, discord_id)
+					VALUES (?, ?, ?)`
 
-	db, err := sql.Open("sqlite3", "./ltrc.db")
+	_, err := globals.GetConnection().Exec(query, name, friend_code, discord_id)
+
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	defer db.Close()
+	return nil
+}
 
-	_, err = db.Exec(query, name, friend_code, discord_id, mii)
+func EditMii(mii string, userID string) error {
+	query := fmt.Sprintf(`UPDATE playerdata
+				SET mii = '%s'
+				WHERE discord_id = '%s'`, mii, userID)
+
+	_, err := globals.GetConnection().Exec(query)
 
 	if err != nil {
 		return err

@@ -22,6 +22,10 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 			response = responses.RegistrationResponse(session, interaction)
 		case commands.SUBMIT_TIME_COMMAND:
 			response = responses.SubmitTimeResponse(session, interaction)
+		case commands.EDIT_MII_COMMAND:
+			response = responses.EditMiiResponse(session, interaction)
+		case commands.LICENSE_COMMAND:
+			response = responses.LicenseResponse(session, interaction)
 		}
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
