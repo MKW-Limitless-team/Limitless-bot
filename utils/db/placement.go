@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"limitless-bot/globals"
 	"limitless-bot/utils/crc"
 
@@ -17,10 +18,16 @@ func SubmitTime(bytes []byte, discordID string, category string) error {
 					character, vehicle, drift_type, category, crc, approved)
 					VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
 
-	globals.GetConnection().Exec(query, header.Track, "123451247890", "🇮🇪",
+	_, err := globals.GetConnection().Exec(query, header.Track, "123451247890", "🇮🇪",
 		header.FinishTime.Minutes, header.FinishTime.Seconds, header.FinishTime.Milliseconds,
 		header.Character, header.Vehicle,
 		header.DriftType, "regular", crc, false)
+
+	if err.Error() == "sqlite3: constraint failed: UNIQUE constraint failed: placements.crc" {
+		return errors.New("can't upload duplicate times")
+	} else if err != nil {
+		return errors.New("failed to submit")
+	}
 
 	return nil
 }

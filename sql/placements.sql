@@ -12,7 +12,7 @@ CREATE TABLE
         drift_type TEXT,
         category TEXT,
         url TEXT,
-        crc INTEGER,
+        crc INTEGER UNIQUE,
         approved BOOLEAN
     );
 

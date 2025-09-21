@@ -1,15 +1,14 @@
 package responses
 
 import (
-	"fmt"
 	"io"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"limitless-bot/utils/db"
 	"net/http"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	r "github.com/nwoik/generate-mii/rkg"
 )
 
 func SubmitTimeResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
@@ -42,10 +41,14 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 		return response.NewResponseData("Error reading file").InteractionResponseData
 	}
 
-	rkg := r.ParseRKG(rkgData)
-	readable := r.ConvertRkg(rkg)
+	args := interaction.ApplicationCommandData().Options
+	category := utils.GetArgument(args, "category").StringValue()
+	userID := interaction.Member.User.ID
+	err = db.SubmitTime(rkgData, userID, category)
 
-	fmt.Println(readable.Header)
+	if err != nil {
+		return response.NewResponseData(err.Error()).InteractionResponseData
+	}
 
 	return data.InteractionResponseData
 }
