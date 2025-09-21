@@ -6,6 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/google/uuid v1.6.0
 	github.com/ncruces/go-sqlite3 v0.28.0
+	github.com/nwoik/generate-mii v1.3.2
 	google.golang.org/api v0.246.0
 )
 
@@ -21,7 +22,6 @@ require (
 	github.com/googleapis/gax-go/v2 v2.15.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/ncruces/julianday v1.0.0 // indirect
-	github.com/nwoik/generate-mii v1.3.0 // indirect
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0 // indirect
