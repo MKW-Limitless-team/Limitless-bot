@@ -5,6 +5,7 @@ import (
 	"limitless-bot/commands"
 	"limitless-bot/events"
 	"limitless-bot/globals"
+	"limitless-bot/responses"
 	"log"
 	"os"
 	"os/signal"
@@ -39,6 +40,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	responses.RegisterResponses()
 
 	globals.Initialize(globals.SQLITEFILE)
 	if err != nil {

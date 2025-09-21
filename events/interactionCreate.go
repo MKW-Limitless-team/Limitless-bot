@@ -1,7 +1,6 @@
 package events
 
 import (
-	"limitless-bot/commands"
 	"limitless-bot/responses"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,36 +10,25 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 	var response *discordgo.InteractionResponse
 	// Handle interaction type
 	if interaction.Type == discordgo.InteractionApplicationCommand && interaction.GuildID != "" {
-		switch cmd := interaction.ApplicationCommandData().Name; cmd {
-		case commands.HELP_COMMAND:
-			response = responses.HelpResponse(session, interaction)
-		case commands.PING_COMMAND:
-			response = responses.PingResponse()
-		case commands.LEADERBOARD_COMMAND:
-			response = responses.LeaderBoardResponse(session, interaction, 0)
-		case commands.REGISTER_COMMAND:
-			response = responses.RegistrationResponse(session, interaction)
-		case commands.SUBMIT_TIME_COMMAND:
-			response = responses.SubmitTimeResponse(session, interaction)
-		case commands.EDIT_MII_COMMAND:
-			response = responses.EditMiiResponse(session, interaction)
-		case commands.LICENSE_COMMAND:
-			response = responses.LicenseResponse(session, interaction)
-		}
+		cmd := interaction.ApplicationCommandData().Name
+		response = responses.CommandResponses[cmd](session, interaction)
+
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
 		case responses.PREVIOUS_BUTTON:
-			response = responses.IncPage(session, interaction, -1)
+			response = responses.IncPage(session, interaction)
 		case responses.HOME_BUTTON:
-			response = responses.LeaderBoardResponse(session, interaction, 0)
+			response = responses.LeaderBoardResponse(session, interaction)
 		case responses.NEXT_BUTTON:
-			response = responses.IncPage(session, interaction, 1)
+			response = responses.IncPage(session, interaction)
 		}
 		response.Type = discordgo.InteractionResponseUpdateMessage
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
 		switch customID := interaction.ModalSubmitData().CustomID; customID {
 		}
-	} else {
+	}
+
+	if response == nil {
 		response = &discordgo.InteractionResponse{
 			Data: &discordgo.InteractionResponseData{
 				Content: "No response for this interaction type is registered",
