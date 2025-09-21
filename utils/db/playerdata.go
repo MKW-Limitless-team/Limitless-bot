@@ -22,7 +22,7 @@ func EditMii(mii string, userID string) error {
 }
 
 func GetPlayer(userID string) (*ltrc.PlayerData, error) {
-	query := `SELECT name, friend_code, mii, discord_id, mmr 
+	query := `SELECT name, friend_code, mii, mmr 
 					FROM playerdata
 					WHERE discord_id = ?`
 	rows, err := globals.GetConnection().Query(query, userID)
@@ -32,10 +32,12 @@ func GetPlayer(userID string) (*ltrc.PlayerData, error) {
 	}
 	defer rows.Close()
 
-	playerData := &ltrc.PlayerData{}
+	playerData := &ltrc.PlayerData{
+		DiscordID: userID,
+	}
 
 	if rows.Next() {
-		rows.Scan(&playerData.Name, &playerData.FriendCode, &playerData.Mii, &playerData.DiscordID, &playerData.Mmr)
+		rows.Scan(&playerData.Name, &playerData.FriendCode, &playerData.Mii, &playerData.Mmr)
 	} else {
 		return nil, errors.New("license not found, please /register to create one")
 	}
