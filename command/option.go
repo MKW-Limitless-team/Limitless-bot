@@ -20,6 +20,18 @@ func NewCommandOption(name string, description string, optionType discordgo.Appl
 	return commandOption
 }
 
+func (option *Option) AddChoice(choice *discordgo.ApplicationCommandOptionChoice) *Option {
+	option.Choices = append(option.Choices, choice)
+
+	return option
+}
+
+func (option *Option) SetAutoComplete(autoComplete bool) *Option {
+	option.Autocomplete = autoComplete
+
+	return option
+}
+
 func (option *Option) SetName(name string) *Option {
 	option.Name = name
 
