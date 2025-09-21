@@ -7,6 +7,7 @@ import (
 )
 
 var CommandResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
+var InteractionResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
 
 func RegisterResponses() {
 	// Add command responses here
@@ -19,6 +20,9 @@ func RegisterResponses() {
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 
 	// Add interaction reponses here
+	InteractionResponses[PREVIOUS_BUTTON] = IncPage
+	InteractionResponses[HOME_BUTTON] = LeaderBoardResponse
+	InteractionResponses[NEXT_BUTTON] = IncPage
 
 	// Add modal responses here
 }

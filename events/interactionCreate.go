@@ -14,18 +14,12 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		response = responses.CommandResponses[cmd](session, interaction)
 
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
-		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
-		case responses.PREVIOUS_BUTTON:
-			response = responses.IncPage(session, interaction)
-		case responses.HOME_BUTTON:
-			response = responses.LeaderBoardResponse(session, interaction)
-		case responses.NEXT_BUTTON:
-			response = responses.IncPage(session, interaction)
-		}
+		customID := interaction.Interaction.MessageComponentData().CustomID
+		response = responses.InteractionResponses[customID](session, interaction)
 		response.Type = discordgo.InteractionResponseUpdateMessage
+
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
-		switch customID := interaction.ModalSubmitData().CustomID; customID {
-		}
+		// switch customID := interaction.ModalSubmitData().CustomID;
 	}
 
 	if response == nil {
