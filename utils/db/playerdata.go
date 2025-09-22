@@ -67,11 +67,11 @@ func GetPlayer(userID string) (*ltrc.PlayerData, error) {
 	return playerData, nil
 }
 
-func RegisterPlayer(name string, friend_code string, discord_id string, flag string) error {
-	query := `INSERT INTO playerdata (name, friend_code, discord_id, flag)
-					VALUES (?, ?, ?, ?)`
+func RegisterPlayer(name string, friend_code string, discord_id string) error {
+	query := `INSERT INTO playerdata (name, friend_code, discord_id)
+					VALUES (?, ?, ?)`
 
-	_, err := globals.GetConnection().Exec(query, name, friend_code, discord_id, flag)
+	_, err := globals.GetConnection().Exec(query, name, friend_code, discord_id)
 
 	if err.Error() == "sqlite3: constraint failed: UNIQUE constraint failed: playerdata.discord_id" {
 		return errors.New("user is already registered")
