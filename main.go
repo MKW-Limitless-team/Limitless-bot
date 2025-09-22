@@ -27,6 +27,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	globals.Initialize(globals.SQLITEFILE)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	events.RegisterEvents(session)
@@ -42,11 +47,6 @@ func main() {
 	}
 
 	responses.RegisterResponses()
-
-	globals.Initialize(globals.SQLITEFILE)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	defer session.Close()
 	defer globals.GetConnection().Close()
