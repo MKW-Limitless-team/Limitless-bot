@@ -73,7 +73,7 @@ func RegisterPlayer(name string, friend_code string, discord_id string) error {
 
 	_, err := globals.GetConnection().Exec(query, name, friend_code, discord_id)
 
-	if err.Error() == "sqlite3: constraint failed: UNIQUE constraint failed: playerdata.discord_id" {
+	if err != nil && err.Error() == "sqlite3: constraint failed: UNIQUE constraint failed: playerdata.discord_id" {
 		return errors.New("user is already registered")
 	} else if err != nil {
 		return err
