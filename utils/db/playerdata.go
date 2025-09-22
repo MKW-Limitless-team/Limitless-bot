@@ -15,7 +15,7 @@ func EditMii(mii string, userID string) error {
 	_, err := globals.GetConnection().Exec(query)
 
 	if err != nil {
-		return err
+		return errors.New("failed to edit mii, ping admin/dev")
 	}
 
 	return nil
@@ -28,7 +28,7 @@ func GetPlayer(userID string) (*ltrc.PlayerData, error) {
 	rows, err := globals.GetConnection().Query(query, userID)
 
 	if err != nil {
-		return nil, errors.New("failed to fetch license, ping admin")
+		return nil, errors.New("failed to fetch license, ping admin/dev")
 	}
 	defer rows.Close()
 
@@ -51,7 +51,9 @@ func RegisterPlayer(name string, friend_code string, discord_id string) error {
 
 	_, err := globals.GetConnection().Exec(query, name, friend_code, discord_id)
 
-	if err != nil {
+	if err.Error() == "sqlite3: constraint failed: UNIQUE constraint failed: playerdata.discord_id" {
+		return errors.New("user is already registered")
+	} else if err != nil {
 		return err
 	}
 

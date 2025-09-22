@@ -51,7 +51,7 @@ func EditMiiData(interaction *discordgo.InteractionCreate) *discordgo.Interactio
 	err := db.EditMii(mii, userID)
 
 	if err != nil {
-		return response.NewResponseData("Failed to edit mii").InteractionResponseData
+		return response.NewResponseData(err.Error()).InteractionResponseData
 	}
 
 	data = response.NewResponseData(fmt.Sprintf("<@%s>'s mii has been changed", userID))
