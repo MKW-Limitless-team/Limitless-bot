@@ -20,7 +20,15 @@ func LicenseResponse(session *discordgo.Session, interaction *discordgo.Interact
 
 func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	var data *response.Data
-	userID := interaction.Member.User.ID
+	var userID string
+	args := interaction.ApplicationCommandData().Options
+
+	if len(args) == 0 {
+		userID = interaction.Member.User.ID
+	} else {
+		user := utils.GetArgument(args, "user").UserValue(session)
+		userID = user.ID
+	}
 
 	playerData, err := db.GetPlayer(userID)
 
@@ -39,7 +47,7 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 
 func LicenseEmbed(playerData *ltrc.PlayerData, guild *discordgo.Guild) *e.Embed {
 
-	embed := e.NewRichEmbed(playerData.Name, "", 0xd70ccf)
+	embed := e.NewRichEmbed(playerData.Name, fmt.Sprintf("<@%s>", playerData.DiscordID), 0xd70ccf)
 
 	embed.AddField("", fmt.Sprintf("**Friend-Code:** %s", playerData.FriendCode), false)
 	embed.AddField("", fmt.Sprintf("**MMR:** %d", playerData.Mmr), false)

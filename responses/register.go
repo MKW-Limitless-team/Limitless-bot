@@ -1,7 +1,6 @@
 package responses
 
 import (
-	"fmt"
 	"limitless-bot/response"
 	"limitless-bot/utils"
 	"limitless-bot/utils/db"
@@ -39,12 +38,12 @@ var (
 
 func RegistrationResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.NewMessageResponse().
-		SetResponseData(RegistrationResponseData(interaction))
+		SetResponseData(RegistrationResponseData(session, interaction))
 
 	return response.InteractionResponse
 }
 
-func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
+func RegistrationResponseData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	var data *response.Data
 
 	args := interaction.ApplicationCommandData().Options
@@ -59,7 +58,9 @@ func RegistrationResponseData(interaction *discordgo.InteractionCreate) *discord
 		return response.NewResponseData(err.Error()).InteractionResponseData
 	}
 
-	data = response.NewResponseData(fmt.Sprintf("<@%s> registered as %s \nFriend code: %s", userID, ign, fc))
+	guild := utils.GetGuild(session, interaction.GuildID)
+	playerData, _ := db.GetPlayer(userID)
+	data = response.NewResponseData("").AddEmbed(LicenseEmbed(playerData, guild))
 
 	return data.InteractionResponseData
 }
