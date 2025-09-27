@@ -4,6 +4,7 @@ import (
 	"io"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"limitless-bot/utils/crc"
 	"limitless-bot/utils/db"
 	"net/http"
 	"strings"
@@ -46,10 +47,24 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 	category := utils.GetArgument(args, "category").StringValue()
 	userID := interaction.Member.User.ID
 	err = db.SubmitTime(rkgData, userID, category, url)
+	viewSubmission(rkgData)
 
 	if err != nil {
 		return response.NewResponseData(err.Error()).InteractionResponseData
 	}
 
 	return data.InteractionResponseData
+}
+
+func viewSubmission(bytes []byte) {
+	crc := crc.CRC(bytes)
+
+	placement, err := db.GetTimeByCRC(crc)
+
+	if err != nil {
+		println(err)
+		return
+	}
+
+	println(placement)
 }

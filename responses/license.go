@@ -53,7 +53,7 @@ func LicenseEmbed(playerData *ltrc.PlayerData, guild *discordgo.Guild) *e.Embed 
 	embed.AddField("", fmt.Sprintf("**MMR:** %d", playerData.Mmr), false)
 
 	if playerData.Mii != "" {
-		embed.SetThumbnail(fmt.Sprintf("https://mii-unsecure.ariankordi.net/miis/image.png?data=%s&expression=normal&cameraYRotate=30", playerData.Mii))
+		embed.SetThumbnail(playerData.ShowMii())
 	} else {
 		embed.SetThumbnail(guild.IconURL(""))
 		embed.AddField("", "**No mii found, use /edit-mii to set license icon**", false)
