@@ -24,7 +24,8 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 	data := response.NewResponseData("Submitted")
 
 	file := utils.GetAttachment(interaction)
-	resp, err := http.Get(file.URL)
+	url := file.URL
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return response.NewResponseData("Failed to get file").InteractionResponseData
@@ -44,7 +45,7 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 	args := interaction.ApplicationCommandData().Options
 	category := utils.GetArgument(args, "category").StringValue()
 	userID := interaction.Member.User.ID
-	err = db.SubmitTime(rkgData, userID, category)
+	err = db.SubmitTime(rkgData, userID, category, url)
 
 	if err != nil {
 		return response.NewResponseData(err.Error()).InteractionResponseData
