@@ -4,6 +4,7 @@ CREATE TABLE
         friend_code TEXT,
         discord_id TEXT PRIMARY KEY,
         mmr INTEGER,
+        flag TEXT,
         mii TEXT
     );
 

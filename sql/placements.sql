@@ -3,7 +3,6 @@ CREATE TABLE
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         track TEXT,
         discord_id TEXT,
-        flag TEXT,
         minutes INTEGER,
         seconds INTEGER,
         milliseconds INTEGER,

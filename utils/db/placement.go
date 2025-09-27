@@ -14,11 +14,11 @@ func SubmitTime(bytes []byte, discordID string, category string, url string) err
 	readable := r.ConvertRkg(rkg)
 	header := readable.Header
 
-	query := `INSERT INTO placements (track, discord_id, flag, minutes, seconds, milliseconds,
+	query := `INSERT INTO placements (track, discord_id, minutes, seconds, milliseconds,
 					character, vehicle, drift_type, category, crc, url, approved)
 					VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`
 
-	_, err := globals.GetConnection().Exec(query, header.Track, discordID, header.Country,
+	_, err := globals.GetConnection().Exec(query, header.Track, discordID,
 		header.FinishTime.Minutes, header.FinishTime.Seconds, header.FinishTime.Milliseconds,
 		header.Character, header.Vehicle,
 		header.DriftType, category, crc, url, false)

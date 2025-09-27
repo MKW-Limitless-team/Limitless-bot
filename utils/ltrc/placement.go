@@ -8,7 +8,6 @@ type Placement struct {
 	ID           int
 	Track        string
 	DiscordID    string
-	Flag         string
 	Minutes      int
 	Seconds      int
 	Milliseconds int

@@ -8,6 +8,7 @@ type PlayerData struct {
 	DiscordID  string
 	Mmr        int64
 	Mii        string
+	Flag       string
 }
 
 // type Season struct {

@@ -26,6 +26,7 @@ func TestPlayerData(t *testing.T) {
 						friend_code TEXT,
 						discord_id TEXT,
 						mmr INTEGER,
+						flag TEXT,
 						mii TEXT
 					);`
 
