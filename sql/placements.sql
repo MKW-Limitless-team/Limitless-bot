@@ -12,7 +12,8 @@ CREATE TABLE
         category TEXT,
         url TEXT,
         crc INTEGER UNIQUE,
-        approved BOOLEAN
+        approved BOOLEAN,
+        FOREIGN KEY (discord_id) REFERENCES playerdata (discord_id)
     );
 
 -- DROP TABLE placements
