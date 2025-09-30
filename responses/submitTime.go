@@ -59,12 +59,12 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 func viewSubmission(bytes []byte) {
 	crc := crc.CRC(bytes)
 
-	placement, err := db.GetTimeByCRC(crc)
+	placement, playerData, err := db.GetTimeByCRC(crc)
 
 	if err != nil {
 		println(err)
 		return
 	}
 
-	println(placement)
+	println(placement, playerData)
 }

@@ -9,7 +9,7 @@ import (
 	r "github.com/nwoik/generate-mii/rkg"
 )
 
-func GetTimeByCRC(crc uint32) (*ltrc.Placement, error) {
+func GetTimeByCRC(crc uint32) (*ltrc.Placement, *ltrc.PlayerData, error) {
 	query := `SELECT id,
 				track,
 				discord_id,
@@ -21,29 +21,35 @@ func GetTimeByCRC(crc uint32) (*ltrc.Placement, error) {
 				drift_type,
 				category,
 				url,
-				approved
-			FROM placements 
+				approved,
+				name,
+				friend_code,
+				mii
+			FROM placements
+			INNER JOIN playerdata ON placements.discord_id = playerdata.discord_id
 			WHERE crc = ?`
 
 	rows, err := globals.GetConnection().Query(query, crc)
 
 	if err != nil {
-		return nil, errors.New("failed to fetch time, ping admin/dev")
+		return nil, nil, errors.New("failed to fetch time, ping admin/dev")
 	}
 	defer rows.Close()
 
 	if rows.Next() {
 		placement := &ltrc.Placement{CRC: crc}
+		playerdata := &ltrc.PlayerData{}
 
 		rows.Scan(&placement.ID, &placement.Track, &placement.DiscordID,
 			&placement.Minutes, &placement.Seconds, &placement.Milliseconds,
 			&placement.Character, &placement.Vehicle, &placement.DriftType,
-			&placement.Category, &placement.Url, &placement.Approved)
+			&placement.Category, &placement.Url, &placement.Approved,
+			&playerdata.Name, &playerdata.FriendCode, playerdata.Mii)
 
-		return placement, nil
+		return placement, playerdata, nil
 	}
 
-	return nil, nil
+	return nil, nil, nil
 }
 
 func SubmitTime(bytes []byte, discordID string, category string, url string) error {
