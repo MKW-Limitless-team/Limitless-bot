@@ -7,6 +7,7 @@ import (
 	e "limitless-bot/components/embed"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"limitless-bot/utils/ltrc"
 	"strconv"
 	"strings"
 
@@ -19,12 +20,12 @@ var (
 	HOME_BUTTON     = "home_button"
 )
 
-func LeaderBoardResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate, page int) *discordgo.InteractionResponse {
+func LeaderBoardResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	guild := utils.GetGuild(session, interaction.GuildID)
 
 	response := response.
 		NewMessageResponse().
-		SetResponseData(LeaderBoardData(guild, page))
+		SetResponseData(LeaderBoardData(guild, 0))
 
 	return response.InteractionResponse
 }
@@ -37,7 +38,7 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	pageNum := page + 1
 	embed.SetFooter(fmt.Sprintf("Page : %d", pageNum), "")
 
-	playerData := utils.SortByMMR(utils.GetPlayerData())
+	playerData := ltrc.SortByMMR(utils.GetPlayerData())
 	playersPerPage := 10
 	start := (page) * playersPerPage
 	end := false
@@ -47,7 +48,7 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 		if index < len(playerData) {
 			player := playerData[index]
 
-			embed.AddField("", fmt.Sprintf("**%d.** %s: %5.f", index+1, player.Name, player.Mmr), false)
+			embed.AddField("", fmt.Sprintf("**%d.** %s: %d", index+1, player.Name, player.Mmr), false)
 		} else {
 			end = true
 			embed.AddField("End", ":rewind: :regional_indicator_b: :regional_indicator_a: :regional_indicator_c: :regional_indicator_k: ", false)
@@ -72,17 +73,27 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	return data.InteractionResponseData
 }
 
-func IncPage(session *discordgo.Session, interaction *discordgo.InteractionCreate, inc int) *discordgo.InteractionResponse {
+func IncPageResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate, page int) *discordgo.InteractionResponse {
+	guild := utils.GetGuild(session, interaction.GuildID)
+
+	response := response.
+		NewMessageResponse().
+		SetResponseData(LeaderBoardData(guild, page))
+
+	return response.InteractionResponse
+}
+
+func IncPage(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	message := interaction.Message
 	embed := message.Embeds[0]
 	pageStr := strings.ReplaceAll(strings.Split(embed.Footer.Text, ":")[1], " ", "")
 	pageNum, err := strconv.ParseInt(pageStr, 10, 64)
-	page := int(pageNum + int64(inc) - 1)
+	page := int(pageNum) // fix soon
 
 	if err != nil {
 		return response.NewMessageResponse().
 			SetResponseData(response.NewResponseData("Error changing page").InteractionResponseData).InteractionResponse
 	}
 
-	return LeaderBoardResponse(session, interaction, page)
+	return IncPageResponse(session, interaction, page)
 }

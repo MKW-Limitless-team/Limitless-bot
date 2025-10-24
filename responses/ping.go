@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func PingResponse() *discordgo.InteractionResponse {
+func PingResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.
 		NewMessageResponse().
 		SetResponseData(PingData())

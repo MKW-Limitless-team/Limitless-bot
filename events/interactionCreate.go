@@ -1,7 +1,6 @@
 package events
 
 import (
-	"limitless-bot/commands"
 	"limitless-bot/responses"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,32 +10,19 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 	var response *discordgo.InteractionResponse
 	// Handle interaction type
 	if interaction.Type == discordgo.InteractionApplicationCommand && interaction.GuildID != "" {
-		switch cmd := interaction.ApplicationCommandData().Name; cmd {
-		case commands.HELP_COMMAND:
-			response = responses.HelpResponse(session, interaction)
-		case commands.PING_COMMAND:
-			response = responses.PingResponse()
-		case commands.LEADERBOARD_COMMAND:
-			response = responses.LeaderBoardResponse(session, interaction, 0)
-		case commands.REGISTER_COMMAND:
-			response = responses.RegistrationFormResponse()
-		}
+		cmd := interaction.ApplicationCommandData().Name
+		response = responses.CommandResponses[cmd](session, interaction)
+
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
-		switch customID := interaction.Interaction.MessageComponentData().CustomID; customID {
-		case responses.PREVIOUS_BUTTON:
-			response = responses.IncPage(session, interaction, -1)
-		case responses.HOME_BUTTON:
-			response = responses.LeaderBoardResponse(session, interaction, 0)
-		case responses.NEXT_BUTTON:
-			response = responses.IncPage(session, interaction, 1)
-		}
+		customID := interaction.Interaction.MessageComponentData().CustomID
+		response = responses.InteractionResponses[customID](session, interaction)
 		response.Type = discordgo.InteractionResponseUpdateMessage
+
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
-		switch customID := interaction.ModalSubmitData().CustomID; customID {
-		case responses.REGISTRATION_FORM:
-			response = responses.RegistrationResponse(interaction)
-		}
-	} else {
+		// switch customID := interaction.ModalSubmitData().CustomID;
+	}
+
+	if response == nil {
 		response = &discordgo.InteractionResponse{
 			Data: &discordgo.InteractionResponseData{
 				Content: "No response for this interaction type is registered",

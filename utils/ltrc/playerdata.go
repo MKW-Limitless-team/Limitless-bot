@@ -1,24 +1,36 @@
-package utils
+package ltrc
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 type PlayerData struct {
 	Name       string
 	FriendCode string
 	DiscordID  string
-	Mmr        float64
+	Mmr        int64
 	Mii        string
+	Flag       string
 }
 
-type Season struct {
-	Name         string
-	Active       bool
-	Participants Participant
+// type Season struct {
+// 	Name         string
+// 	Active       bool
+// 	Participants Participant
+// }
+
+// type Participant struct {
+// 	Name string
+// 	Mmr  int64
+// }
+
+func (playerData *PlayerData) ShowMii() string {
+	return ShowMii(playerData.Mii)
 }
 
-type Participant struct {
-	Name string
-	Mmr  float64
+func ShowMii(mii string) string {
+	return fmt.Sprintf("https://mii-unsecure.ariankordi.net/miis/image.png?data=%s&expression=normal&cameraYRotate=30", mii)
 }
 
 type byMmr []*PlayerData
