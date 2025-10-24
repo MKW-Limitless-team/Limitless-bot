@@ -18,6 +18,7 @@ func RegisterResponses() {
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
 	CommandResponses[commands.EDIT_MII_COMMAND] = EditMiiResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
+	CommandResponses[commands.STATS_COMMAND] = StatsResponse
 
 	// Add interaction reponses here
 	InteractionResponses[PREVIOUS_BUTTON] = IncPage
