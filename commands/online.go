@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	STATS_COMMAND = "stats"
+	ONLINE_COMMAND = "online"
 )
 
-func StatsCommand() *discordgo.ApplicationCommand {
-	command := c.NewChatApplicationCommand(STATS_COMMAND, "Shows current users").
+func OnlineCommand() *discordgo.ApplicationCommand {
+	command := c.NewChatApplicationCommand(ONLINE_COMMAND, "Shows current users").
 		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
 	return command.ApplicationCommand

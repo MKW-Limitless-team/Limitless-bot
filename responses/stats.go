@@ -17,17 +17,17 @@ type Stats struct {
 	GroupCount        int `json:"groups"`
 }
 
-func StatsResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+func OnlineResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	guild := utils.GetGuild(session, interaction.GuildID)
 
 	response := response.
 		NewMessageResponse().
-		SetResponseData(StatsData(guild))
+		SetResponseData(OnlineData(guild))
 
 	return response.InteractionResponse
 }
 
-func StatsData(guild *discordgo.Guild) *discordgo.InteractionResponseData {
+func OnlineData(guild *discordgo.Guild) *discordgo.InteractionResponseData {
 	data := response.NewResponseData("")
 	embed := e.NewRichEmbed("**Online Status**", "", 0xd70ccf)
 	embed.SetThumbnail(guild.IconURL(""))
