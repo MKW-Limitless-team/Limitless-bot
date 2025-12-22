@@ -4,6 +4,8 @@ cloud.google.com/go/auth/oauth2adapt v0.2.8 h1:keo8NaayQZ6wimpNSmW5OPc283g65QNIi
 cloud.google.com/go/auth/oauth2adapt v0.2.8/go.mod h1:XQ9y31RkqZCcwJWNSx2Xvric3RrU88hAYYbjDWYDL+c=
 cloud.google.com/go/compute/metadata v0.7.0 h1:PBWF+iiAerVNe8UCHxdOt6eHLVc3ydFeOCw78U8ytSU=
 cloud.google.com/go/compute/metadata v0.7.0/go.mod h1:j5MvL9PprKL39t166CoB1uVHfQMs4tFQZZcKwksXUjo=
+github.com/MKW-Limitless-team/limitless-types v1.0.5 h1:fg4CVHUFehXVenxIRw2QQd43M/Xo5DJgmn3LyxBZ2cA=
+github.com/MKW-Limitless-team/limitless-types v1.0.5/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
 github.com/bwmarrin/discordgo v0.29.0 h1:FmWeXFaKUwrcL3Cx65c20bTRW+vOb6k8AnaP+EgjDno=
 github.com/bwmarrin/discordgo v0.29.0/go.mod h1:NJZpH+1AfhIcyQsPeuBKsUtYrRnjkyu0kIVMCHkZtRY=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
@@ -33,10 +35,6 @@ github.com/ncruces/go-sqlite3 v0.28.0 h1:AQVTUPgfamONl09LS+4rGFbHmLKM8/QrJJJi1Uu
 github.com/ncruces/go-sqlite3 v0.28.0/go.mod h1:WqvLhYwtEiZzg1H8BIeahUv/DxbmR+3xG5jDHDiBAGk=
 github.com/ncruces/julianday v1.0.0 h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=
 github.com/ncruces/julianday v1.0.0/go.mod h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g=
-github.com/nwoik/generate-mii v1.3.0 h1:zOEq5hTYlOxLj/mH0grpezFfXHKPeQyCj9KF6IoAtM4=
-github.com/nwoik/generate-mii v1.3.0/go.mod h1:H+PQlLlJH1JWBad0YOminyS4GQbza2hNAhyy0PpHwmw=
-github.com/nwoik/generate-mii v1.3.1 h1:rIU5drly2EVMsLnOYpvyzfm40uRATCRj1HcG3IWGAbw=
-github.com/nwoik/generate-mii v1.3.1/go.mod h1:H+PQlLlJH1JWBad0YOminyS4GQbza2hNAhyy0PpHwmw=
 github.com/nwoik/generate-mii v1.3.2 h1:7RZ+ApOAAEBOTmXarVq+WiT4LfW+9Ev5U2ZyAcAZUCA=
 github.com/nwoik/generate-mii v1.3.2/go.mod h1:H+PQlLlJH1JWBad0YOminyS4GQbza2hNAhyy0PpHwmw=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
