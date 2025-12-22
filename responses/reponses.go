@@ -8,6 +8,7 @@ import (
 
 var CommandResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
 var InteractionResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
+var ModalResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
 
 func RegisterResponses() {
 	// Add command responses here
@@ -19,6 +20,7 @@ func RegisterResponses() {
 	CommandResponses[commands.EDIT_MII_COMMAND] = EditMiiResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
+	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 
 	// Add interaction reponses here
 	InteractionResponses[PREVIOUS_BUTTON] = IncPage
@@ -26,4 +28,5 @@ func RegisterResponses() {
 	InteractionResponses[NEXT_BUTTON] = IncPage
 
 	// Add modal responses here
+	ModalResponses[TABLE_SUBMIT] = TableResponse
 }
