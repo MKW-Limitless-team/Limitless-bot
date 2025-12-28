@@ -19,7 +19,8 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		response.Type = discordgo.InteractionResponseUpdateMessage
 
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
-		// switch customID := interaction.ModalSubmitData().CustomID;
+		customID := interaction.ModalSubmitData().CustomID
+		response = responses.ModalResponses[customID](session, interaction)
 	}
 
 	if response == nil {
