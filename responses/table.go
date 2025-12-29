@@ -15,27 +15,36 @@ var (
 	TABLE_SUBMIT      = "table_submit"
 	EDIT_TABLE_SUBMIT = "edit_table_submit"
 	TABLE_EDIT_BUTTON = "table_edit_button"
+	VISIT_SITE_BUTTON = "visit_site_button"
 )
 
 func TableRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.NewModalResponse().
-		SetResponseData(TableFormData(TABLE_SUBMIT))
+		SetResponseData(TableFormData(TABLE_SUBMIT, ""))
 
 	return response.InteractionResponse
 }
 
 func EditTableRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+	data := ""
+	params, err := utils.GetURLParams(interaction.Message.Content)
+
+	if err == nil {
+		data = params["data"]
+	}
+
 	response := response.NewModalResponse().
-		SetResponseData(TableFormData(EDIT_TABLE_SUBMIT))
+		SetResponseData(TableFormData(EDIT_TABLE_SUBMIT, data))
 
 	return response.InteractionResponse
 }
 
-func TableFormData(id string) *discordgo.InteractionResponseData {
+func TableFormData(id string, value string) *discordgo.InteractionResponseData {
 	data := response.NewFormData("Table data", id)
 
 	actionRow := components.NewActionRow()
 	textfield := modal.NewTextArea("Table Data", "data", true)
+	textfield.Value = value
 
 	actionRow.AddComponent(textfield)
 	data.AddComponent(actionRow)
@@ -72,10 +81,12 @@ func TableData(interaction *discordgo.InteractionCreate, guild *discordgo.Guild)
 	data.SetContent("https://gb2.hlorenzi.com/table.png?data=" + url.QueryEscape(tableData))
 
 	actionRow := components.NewActionRow()
-	button := button.NewBasicButton("Edit", TABLE_EDIT_BUTTON, discordgo.PrimaryButton, false)
+	edit_button := button.NewBasicButton("Edit", TABLE_EDIT_BUTTON, discordgo.PrimaryButton, false)
+	url_button := button.NewLinkButton("Visit Site", "https://gb.hlorenzi.com/table?data="+url.QueryEscape(tableData), "🔗")
 
 	data.AddComponent(actionRow)
-	actionRow.AddComponent(button)
+	actionRow.AddComponent(edit_button)
+	actionRow.AddComponent(url_button)
 
 	return data.InteractionResponseData
 }
