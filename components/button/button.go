@@ -30,7 +30,17 @@ func NewEmojiButton(label string, id string, style discordgo.ButtonStyle, disabl
 		SetID(id).
 		SetStyle(style).
 		SetDisabled(disabled).
-		SetEmoji(em.NewBasicEmoji(emoji).ComponentEmoji)
+		SetEmoji(emoji)
+
+	return button
+}
+
+func NewLinkButton(label string, url string, emoji string) *Button {
+	button := NewButton().
+		SetLabel(label).
+		SetStyle(discordgo.LinkButton).
+		SetURL(url).
+		SetEmoji(emoji)
 
 	return button
 }
@@ -59,8 +69,14 @@ func (button *Button) SetDisabled(disabled bool) *Button {
 	return button
 }
 
-func (button *Button) SetEmoji(emoji *discordgo.ComponentEmoji) *Button {
-	button.Emoji = emoji
+func (button *Button) SetEmoji(emoji string) *Button {
+	button.Emoji = em.NewBasicEmoji(emoji).ComponentEmoji
+
+	return button
+}
+
+func (button *Button) SetURL(url string) *Button {
+	button.URL = url
 
 	return button
 }

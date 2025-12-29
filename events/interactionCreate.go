@@ -12,12 +12,9 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 	if interaction.Type == discordgo.InteractionApplicationCommand && interaction.GuildID != "" {
 		cmd := interaction.ApplicationCommandData().Name
 		response = responses.CommandResponses[cmd](session, interaction)
-
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		customID := interaction.Interaction.MessageComponentData().CustomID
 		response = responses.InteractionResponses[customID](session, interaction)
-		response.Type = discordgo.InteractionResponseUpdateMessage
-
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
 		customID := interaction.ModalSubmitData().CustomID
 		response = responses.ModalResponses[customID](session, interaction)

@@ -27,6 +27,10 @@ func LeaderBoardResponse(session *discordgo.Session, interaction *discordgo.Inte
 		NewMessageResponse().
 		SetResponseData(LeaderBoardData(guild, 0))
 
+	if interaction.Type == discordgo.InteractionMessageComponent {
+		response.Type = discordgo.InteractionResponseUpdateMessage
+	}
+
 	return response.InteractionResponse
 }
 
@@ -80,6 +84,7 @@ func IncPageResponse(session *discordgo.Session, interaction *discordgo.Interact
 		NewMessageResponse().
 		SetResponseData(LeaderBoardData(guild, page))
 
+	response.Type = discordgo.InteractionResponseUpdateMessage
 	return response.InteractionResponse
 }
 

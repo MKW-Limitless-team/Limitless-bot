@@ -26,7 +26,9 @@ func RegisterResponses() {
 	InteractionResponses[PREVIOUS_BUTTON] = IncPage
 	InteractionResponses[HOME_BUTTON] = LeaderBoardResponse
 	InteractionResponses[NEXT_BUTTON] = IncPage
+	InteractionResponses[TABLE_EDIT_BUTTON] = EditTableRequest
 
 	// Add modal responses here
 	ModalResponses[TABLE_SUBMIT] = TableResponse
+	ModalResponses[EDIT_TABLE_SUBMIT] = EditTableResponse
 }
