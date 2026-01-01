@@ -82,6 +82,7 @@ func TableData(interaction *discordgo.InteractionCreate, guild *discordgo.Guild)
 
 	actionRow := components.NewActionRow()
 	edit_button := button.NewBasicButton("Edit", TABLE_EDIT_BUTTON, discordgo.PrimaryButton, false)
+  
 	url_button := button.NewLinkButton("Visit Site", "https://gb2.hlorenzi.com/table?data="+url.QueryEscape(tableData), "🔗")
 
 	data.AddComponent(actionRow)
