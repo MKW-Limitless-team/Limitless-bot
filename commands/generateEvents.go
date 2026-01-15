@@ -11,7 +11,8 @@ var (
 )
 
 func GenerateEventsCommand() *discordgo.ApplicationCommand {
-	command := command.NewChatApplicationCommand(GENERATE_EVENTS_COMMAND, "Generates events for 3 days")
+	command := command.NewChatApplicationCommand(GENERATE_EVENTS_COMMAND, "Generates events for 3 days").
+		SetDefaultMemberPermissions(discordgo.PermissionManageMessages)
 
 	return command.ApplicationCommand
 }
