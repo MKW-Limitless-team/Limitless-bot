@@ -55,7 +55,6 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 
 	seedStr, _ := utils.GetSubmitDataValueByID(submitData, "seed")
 	seed := getSeed(seedStr, interaction.ID)
-	source := rand.New(rand.NewSource(seed))
 
 	dateStr, _ := utils.GetSubmitDataValueByID(submitData, "date")
 	date, err := utils.GetTime(dateStr)
@@ -74,6 +73,7 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 
 	var msg strings.Builder
 	msg.WriteString("# All events require a minimum 8 players, except 3v3s which require 9\n")
+	source := rand.New(rand.NewSource(seed))
 
 	for i, date := range dates {
 		fmt.Fprintf(&msg, "## %s of %s\n", utils.DayToString(date.Day()), date.Month().String())
@@ -81,7 +81,7 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 		events := utils.PickMany(source, utils.Modes, 2)
 
 		for j, event := range events {
-			fmt.Fprintf(&msg, "### Event %s | %s | \n", labels[(i*2)+j], event)
+			fmt.Fprintf(&msg, "### Event %s | %s | \n", labels[(i*2)+j], event.Name)
 
 			fmt.Fprintf(&msg, "Starting Time: Between %s and %s\n",
 				utils.CreateTimeStamp(date), utils.CreateTimeStamp(date.Add(time.Hour*1+time.Minute*14)))

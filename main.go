@@ -49,8 +49,8 @@ func main() {
 
 	responses.RegisterResponses()
 
-	utils.PopulateMap("./events.csv", utils.Modes)
-	utils.PopulateMap("./modifiers.csv", utils.Modifiers)
+	utils.Modes = utils.PopulateList("./events.csv", utils.Modes)
+	utils.Modifiers = utils.PopulateList("./modifiers.csv", utils.Modifiers)
 
 	defer session.Close()
 	defer globals.GetConnection().Close()
