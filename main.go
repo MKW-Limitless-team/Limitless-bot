@@ -29,9 +29,6 @@ func main() {
 	}
 
 	globals.Initialize(globals.SQLITEFILE)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
