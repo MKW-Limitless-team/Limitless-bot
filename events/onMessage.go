@@ -15,7 +15,5 @@ func OnMessage(session *discordgo.Session, msg *discordgo.MessageCreate) {
 			session.MessageReactionAdd(msg.ChannelID, message.ID, emoji)
 
 		}
-
-		return
 	}
 }
