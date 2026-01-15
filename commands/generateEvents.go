@@ -11,7 +11,7 @@ var (
 )
 
 func GenerateEventsCommand() *discordgo.ApplicationCommand {
-	command := command.NewChatApplicationCommand(GENERATE_EVENTS_COMMAND, "Generates events that begin on a specified date for the next 3 days")
+	command := command.NewChatApplicationCommand(GENERATE_EVENTS_COMMAND, "Generates events for 3 days")
 
 	return command.ApplicationCommand
 }
