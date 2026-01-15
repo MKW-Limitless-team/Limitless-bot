@@ -6,6 +6,7 @@ import (
 	"limitless-bot/events"
 	"limitless-bot/globals"
 	"limitless-bot/responses"
+	"limitless-bot/utils"
 	"log"
 	"os"
 	"os/signal"
@@ -47,6 +48,9 @@ func main() {
 	}
 
 	responses.RegisterResponses()
+
+	utils.PopulateMap("./events.csv", utils.Modes)
+	utils.PopulateMap("./modifiers.csv", utils.Modifiers)
 
 	defer session.Close()
 	defer globals.GetConnection().Close()

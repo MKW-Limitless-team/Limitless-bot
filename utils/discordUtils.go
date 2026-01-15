@@ -4,9 +4,40 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+func CreateTimeStamp(t time.Time) string {
+	return fmt.Sprintf("<t:%d:F>", t.Unix())
+}
+
+func DayToString(day int) string {
+	dayStr := fmt.Sprint(day)
+
+	if strings.HasSuffix(dayStr, "1") {
+		dayStr += "st"
+	} else if strings.HasSuffix(dayStr, "2") {
+		dayStr += "nd"
+	} else if strings.HasSuffix(dayStr, "3") {
+		dayStr += "rd"
+	} else {
+		dayStr += "th"
+	}
+
+	return dayStr
+}
+
+func GetTime(timeStr string) (time.Time, error) {
+	t, err := time.Parse("02-01-2006 15:04", timeStr+" 19:30")
+
+	if err != nil {
+		return t, err
+	}
+
+	return t, nil
+}
 
 func GetArgument(options []*discordgo.ApplicationCommandInteractionDataOption, name string) *discordgo.ApplicationCommandInteractionDataOption {
 	for _, option := range options {
