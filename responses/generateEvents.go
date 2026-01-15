@@ -17,6 +17,7 @@ import (
 
 var (
 	EVENT_SUBMIT = "event_submit"
+	LABELS       = []string{"🇦", "🇧", "🇨", "🇩", "🇪", "🇫"}
 )
 
 func GenerateEventsFormRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
@@ -69,8 +70,6 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 	dates = append(dates, date.Add(time.Hour*24))
 	dates = append(dates, date.Add(time.Hour*48))
 
-	labels := []string{":regional_indicator_a:", ":regional_indicator_b:", ":regional_indicator_c:", ":regional_indicator_d:", ":regional_indicator_e:", ":regional_indicator_f:"}
-
 	var msg strings.Builder
 	msg.WriteString("# All events require a minimum 8 players, except 3v3s which require 9\n")
 	source := rand.New(rand.NewSource(seed))
@@ -81,7 +80,7 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 		events := utils.PickMany(source, utils.Modes, 2)
 
 		for j, event := range events {
-			fmt.Fprintf(&msg, "### Event %s | %s | \n", labels[(i*2)+j], event.Name)
+			fmt.Fprintf(&msg, "### Event %s | %s | \n", LABELS[(i*2)+j], event.Name)
 
 			fmt.Fprintf(&msg, "Starting Time: Between %s and %s\n",
 				utils.CreateTimeStamp(date), utils.CreateTimeStamp(date.Add(time.Hour*1+time.Minute*14)))
