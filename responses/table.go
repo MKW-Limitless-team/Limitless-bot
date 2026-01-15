@@ -20,7 +20,7 @@ var (
 
 func TableRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.NewModalResponse().
-		SetResponseData(TableFormData(TABLE_SUBMIT, ""))
+		SetResponseData(TableForm(TABLE_SUBMIT, ""))
 
 	return response.InteractionResponse
 }
@@ -34,12 +34,12 @@ func EditTableRequest(session *discordgo.Session, interaction *discordgo.Interac
 	}
 
 	response := response.NewModalResponse().
-		SetResponseData(TableFormData(EDIT_TABLE_SUBMIT, data))
+		SetResponseData(TableForm(EDIT_TABLE_SUBMIT, data))
 
 	return response.InteractionResponse
 }
 
-func TableFormData(id string, value string) *discordgo.InteractionResponseData {
+func TableForm(id string, value string) *discordgo.InteractionResponseData {
 	data := response.NewFormData("Table data", id)
 
 	actionRow := components.NewActionRow()
@@ -82,7 +82,7 @@ func TableData(interaction *discordgo.InteractionCreate, guild *discordgo.Guild)
 
 	actionRow := components.NewActionRow()
 	edit_button := button.NewBasicButton("Edit", TABLE_EDIT_BUTTON, discordgo.PrimaryButton, false)
-  
+
 	url_button := button.NewLinkButton("Visit Site", "https://gb2.hlorenzi.com/table?data="+url.QueryEscape(tableData), "🔗")
 
 	data.AddComponent(actionRow)

@@ -21,6 +21,7 @@ func RegisterResponses() {
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
+	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
 
 	// Add interaction reponses here
 	InteractionResponses[PREVIOUS_BUTTON] = IncPage
@@ -31,4 +32,5 @@ func RegisterResponses() {
 	// Add modal responses here
 	ModalResponses[TABLE_SUBMIT] = TableResponse
 	ModalResponses[EDIT_TABLE_SUBMIT] = EditTableResponse
+	ModalResponses[EVENT_SUBMIT] = GenerateEventsResponse
 }

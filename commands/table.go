@@ -11,7 +11,8 @@ var (
 )
 
 func TableCommand() *discordgo.ApplicationCommand {
-	command := c.NewChatApplicationCommand(TABLE_COMMAND, "creates a table")
+	command := c.NewChatApplicationCommand(TABLE_COMMAND, "creates a table").
+		SetDefaultMemberPermissions(discordgo.PermissionManageMessages)
 
 	return command.ApplicationCommand
 }
