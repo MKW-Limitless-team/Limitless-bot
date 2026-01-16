@@ -11,8 +11,7 @@ var (
 )
 
 func TracklistCommand() *discordgo.ApplicationCommand {
-	command := c.NewChatApplicationCommand(TRACKLIST_COMMAND, "Generate a tracklist").
-		SetDefaultMemberPermissions(discordgo.PermissionManageMessages)
+	command := c.NewChatApplicationCommand(TRACKLIST_COMMAND, "Generate a tracklist")
 
 	amountOption := c.NewCommandOption("amount", "Number of tracks to select (default: 32)", discordgo.ApplicationCommandOptionInteger, false)
 
