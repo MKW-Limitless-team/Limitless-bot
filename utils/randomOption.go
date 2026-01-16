@@ -17,6 +17,7 @@ type RandomOption struct {
 var (
 	Modes     []*RandomOption = make([]*RandomOption, 0)
 	Modifiers []*RandomOption = make([]*RandomOption, 0)
+	Tracks    []*RandomOption = make([]*RandomOption, 0)
 )
 
 func SumTotal(options []*RandomOption) int {
