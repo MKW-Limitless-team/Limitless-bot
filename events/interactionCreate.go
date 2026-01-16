@@ -2,6 +2,7 @@ package events
 
 import (
 	"limitless-bot/responses"
+	"limitless-bot/utils"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -14,16 +15,14 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		response = responses.CommandResponses[cmd](session, interaction)
 	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
 		member := interaction.Member
-		perms, err := session.UserChannelPermissions(member.User.ID, interaction.ChannelID)
-		if err != nil {
+		customID := interaction.Interaction.MessageComponentData().CustomID
+		interactionResp := responses.GetInteraction(customID, responses.InteractionResps)
+
+		if !utils.HasPermission(member, interactionResp.Permission) {
 			return
 		}
 
-		if perms&discordgo.PermissionManageMessages == 0 {
-			return
-		}
-		customID := interaction.Interaction.MessageComponentData().CustomID
-		response = responses.InteractionResponses[customID](session, interaction)
+		response = interactionResp.Respond(session, interaction)
 	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
 		customID := interaction.ModalSubmitData().CustomID
 		response = responses.ModalResponses[customID](session, interaction)
