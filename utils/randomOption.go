@@ -80,13 +80,13 @@ func PopulateList(csvFile string, list []*RandomOption) []*RandomOption {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		name := strings.Split(scanner.Text(), ",")[0]
-		change, err := strconv.Atoi(strings.Split(scanner.Text(), ",")[1])
+		chance, err := strconv.Atoi(strings.Split(scanner.Text(), ",")[1])
 
 		if err != nil {
 			panic(err)
 		}
 
-		option := &RandomOption{Name: name, Chance: change}
+		option := &RandomOption{Name: name, Chance: chance}
 		list = append(list, option)
 	}
 

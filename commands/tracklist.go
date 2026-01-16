@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"limitless-bot/command"
+	c "limitless-bot/command"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -11,17 +11,12 @@ var (
 )
 
 func TracklistCommand() *discordgo.ApplicationCommand {
-	command := command.NewChatApplicationCommand(TRACKLIST_COMMAND, "Generate a tracklist").
+	command := c.NewChatApplicationCommand(TRACKLIST_COMMAND, "Generate a tracklist").
 		SetDefaultMemberPermissions(discordgo.PermissionManageMessages)
 
-	amountOption := &discordgo.ApplicationCommandOption{
-		Name:        "amount",
-		Description: "Number of tracks to select (default: 32)",
-		Type:        discordgo.ApplicationCommandOptionInteger,
-		Required:    false,
-	}
+	amountOption := c.NewCommandOption("amount", "Number of tracks to select (default: 32)", discordgo.ApplicationCommandOptionInteger, false)
 
-	command.AddOption(amountOption)
+	command.AddOption(amountOption.ApplicationCommandOption)
 
 	return command.ApplicationCommand
 }
