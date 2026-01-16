@@ -82,6 +82,14 @@ func GetSubmitDataValueByID(submitData discordgo.ModalSubmitInteractionData, id 
 	return value, fmt.Errorf("No field found for ID: %s", id)
 }
 
+func HasPermission(member *discordgo.Member, requiredPermission *int64) bool {
+	if member == nil || requiredPermission == nil {
+		return false
+	}
+
+	return member.Permissions&(*requiredPermission) == *requiredPermission
+}
+
 func HexToInt(hex string) int {
 	hex = strings.ReplaceAll(hex, "#", "")
 	num, err := strconv.ParseInt(hex, 16, 64)
