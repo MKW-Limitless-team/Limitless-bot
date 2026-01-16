@@ -17,6 +17,7 @@ type RandomOption struct {
 var (
 	Modes     []*RandomOption = make([]*RandomOption, 0)
 	Modifiers []*RandomOption = make([]*RandomOption, 0)
+	Tracks    []*RandomOption = make([]*RandomOption, 0)
 )
 
 func SumTotal(options []*RandomOption) int {
@@ -79,13 +80,13 @@ func PopulateList(csvFile string, list []*RandomOption) []*RandomOption {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		name := strings.Split(scanner.Text(), ",")[0]
-		change, err := strconv.Atoi(strings.Split(scanner.Text(), ",")[1])
+		chance, err := strconv.Atoi(strings.Split(scanner.Text(), ",")[1])
 
 		if err != nil {
 			panic(err)
 		}
 
-		option := &RandomOption{Name: name, Chance: change}
+		option := &RandomOption{Name: name, Chance: chance}
 		list = append(list, option)
 	}
 

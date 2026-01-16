@@ -22,6 +22,7 @@ func RegisterResponses() {
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
+	CommandResponses[commands.TRACKLIST_COMMAND] = TracklistResponse
 
 	// Add interaction reponses here
 	InteractionResponses[PREVIOUS_BUTTON] = IncPage

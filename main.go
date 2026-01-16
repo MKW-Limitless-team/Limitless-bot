@@ -48,6 +48,7 @@ func main() {
 
 	utils.Modes = utils.PopulateList("./events.csv", utils.Modes)
 	utils.Modifiers = utils.PopulateList("./modifiers.csv", utils.Modifiers)
+	utils.Tracks = utils.PopulateList("./tracks.csv", utils.Tracks)
 
 	defer session.Close()
 	defer globals.GetConnection().Close()
