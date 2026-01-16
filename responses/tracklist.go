@@ -6,6 +6,7 @@ import (
 	"limitless-bot/utils"
 	"math/big"
 	"math/rand"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -44,6 +45,11 @@ func TracklistData(session *discordgo.Session, interaction *discordgo.Interactio
 	source := rand.New(rand.NewSource(int64(seed)))
 
 	tracks := utils.PickMany(source, utils.Tracks, amount)
+
+	// Sort tracks alphabetically
+	sort.Slice(tracks, func(i, j int) bool {
+		return tracks[i].Name < tracks[j].Name
+	})
 
 	for _, track := range tracks {
 		fmt.Fprintf(&msg, "%s\n", track.Name)
