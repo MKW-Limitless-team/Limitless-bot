@@ -21,7 +21,6 @@ func getMKWIIStats(session *discordgo.Session) {
 	for {
 		_, ok := <-ticker.C
 		if ok {
-			println("t")
 			resp, err := http.Get("http://localhost/api/stats?game=mariokartwii")
 
 			if err != nil {

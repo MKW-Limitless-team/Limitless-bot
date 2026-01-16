@@ -22,7 +22,7 @@ func HelpData(session *discordgo.Session, interaction *discordgo.InteractionCrea
 	embed := embed.NewRichEmbed("**Commands**", "All the info on the bot's commands ", 0xff00e4)
 
 	for _, command := range commands.GlobalCommands {
-		if utils.HasPermission(interaction.Member, *command.DefaultMemberPermissions) {
+		if command.DefaultMemberPermissions != nil && utils.HasPermission(interaction.Member, *command.DefaultMemberPermissions) {
 			embed.AddField(fmt.Sprintf("**/%s**", command.Name), command.Description, false)
 		}
 	}
