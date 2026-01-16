@@ -8,7 +8,6 @@ import (
 
 var (
 	CommandResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
-	// var InteractionResps = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
 	InteractionResps = make([]*InteractionResp, 0)
 	ModalResponses   = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
 )
