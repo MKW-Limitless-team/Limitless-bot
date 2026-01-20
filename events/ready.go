@@ -30,7 +30,15 @@ func getMKWIIStats(session *discordgo.Session) {
 				err = json.NewDecoder(resp.Body).Decode(&stats)
 
 				global := stats["global"]
-				UpdateStatus(session, fmt.Sprintf("🎮 %d Players Online", global.OnlinePlayerCount))
+				if global.OnlinePlayerCount == 0 {
+					UpdateStatus(session, fmt.Sprintf("🎮 %d Players Online 😴", global.OnlinePlayerCount))
+				} else if global.OnlinePlayerCount == 1 {
+					UpdateStatus(session, fmt.Sprintf("🎮 %d Player Online 😔", global.OnlinePlayerCount))
+				} else if global.OnlinePlayerCount < 5 {
+					UpdateStatus(session, fmt.Sprintf("🎮 %d Players Online 😃", global.OnlinePlayerCount))
+				} else {
+					UpdateStatus(session, fmt.Sprintf("🎮 %d Players Online 😎", global.OnlinePlayerCount))
+				}
 			}
 		}
 	}
