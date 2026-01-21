@@ -39,12 +39,22 @@ func GetTime(timeStr string) (time.Time, error) {
 	return t, nil
 }
 
-func GetArgument(options []*discordgo.ApplicationCommandInteractionDataOption, name string) *discordgo.ApplicationCommandInteractionDataOption {
+func GetOption(options []*discordgo.ApplicationCommandInteractionDataOption, name string) *discordgo.ApplicationCommandInteractionDataOption {
 	for _, option := range options {
 		if option.Name == name {
 			return option
 		}
 	}
+	return nil
+}
+
+func GetFocusedOption(options []*discordgo.ApplicationCommandInteractionDataOption) (option *discordgo.ApplicationCommandInteractionDataOption) {
+	for _, option := range options {
+		if option.Focused {
+			return option
+		}
+	}
+
 	return nil
 }
 

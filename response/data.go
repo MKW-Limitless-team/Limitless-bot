@@ -29,6 +29,19 @@ func NewFormData(title string, id string) *Data {
 	return responseData
 }
 
+func NewAutoCompleteData(choices []*discordgo.ApplicationCommandOptionChoice) *Data {
+	responseData := newData().
+		SetChoices(choices)
+
+	return responseData
+}
+
+func (data *Data) SetChoices(choices []*discordgo.ApplicationCommandOptionChoice) *Data {
+	data.Choices = choices
+
+	return data
+}
+
 func (data *Data) SetContent(content string) *Data {
 	data.Content = content
 

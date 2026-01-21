@@ -46,9 +46,10 @@ func main() {
 
 	responses.RegisterResponses()
 
-	utils.Modes = utils.PopulateList("./events.csv", utils.Modes)
-	utils.Modifiers = utils.PopulateList("./modifiers.csv", utils.Modifiers)
-	utils.Tracks = utils.PopulateList("./tracks.csv", utils.Tracks)
+	utils.Modes = utils.PopulateRandomOptions("./events.csv", utils.Modes)
+	utils.Modifiers = utils.PopulateRandomOptions("./modifiers.csv", utils.Modifiers)
+	utils.Tracks = utils.PopulateRandomOptions("./tracks.csv", utils.Tracks)
+	utils.FolderNames = utils.PopulateFolderNames("./folderNames.csv", utils.FolderNames)
 
 	defer session.Close()
 	defer globals.GetConnection().Close()

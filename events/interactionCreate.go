@@ -10,31 +10,43 @@ import (
 func InteractionCreate(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
 	var response *discordgo.InteractionResponse
 	// Handle interaction type
-	if interaction.Type == discordgo.InteractionApplicationCommand && interaction.GuildID != "" {
+	switch interaction.Type {
+	case discordgo.InteractionApplicationCommand:
 		cmd := interaction.ApplicationCommandData().Name
-		response = responses.CommandResponses[cmd](session, interaction)
-	} else if interaction.Type == discordgo.InteractionMessageComponent && interaction.GuildID != "" { // these are for button interactions
+		responseFunc, ok := responses.CommandResponses[cmd]
+
+		if ok {
+			response = responseFunc(session, interaction)
+		}
+
+	case discordgo.InteractionMessageComponent:
 		member := interaction.Member
 		customID := interaction.Interaction.MessageComponentData().CustomID
 		interactionResp := responses.GetInteraction(customID, responses.InteractionResps)
 
-		if !utils.HasPermission(member, interactionResp.Permission) {
-			return
+		if utils.HasPermission(member, interactionResp.Permission) {
+			response = interactionResp.Respond(session, interaction)
 		}
 
-		response = interactionResp.Respond(session, interaction)
-	} else if interaction.Type == discordgo.InteractionModalSubmit && interaction.GuildID != "" {
+	case discordgo.InteractionModalSubmit:
 		customID := interaction.ModalSubmitData().CustomID
-		response = responses.ModalResponses[customID](session, interaction)
-	}
+		responseFunc, ok := responses.ModalResponses[customID]
 
-	if response == nil {
-		response = &discordgo.InteractionResponse{
-			Data: &discordgo.InteractionResponseData{
-				Content: "No response for this interaction type is registered",
-			},
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
+		if ok {
+			response = responseFunc(session, interaction)
+		}
+
+	case discordgo.InteractionApplicationCommandAutocomplete:
+		data := interaction.ApplicationCommandData()
+		focusedOption := utils.GetFocusedOption(data.Options)
+
+		responseFunc, ok := responses.AutoCompleteResponses[focusedOption.Name]
+		if ok && focusedOption.StringValue() != "" {
+			response = responseFunc(session, interaction, focusedOption)
 		}
 	}
-	_ = session.InteractionRespond(interaction.Interaction, response)
+
+	if response != nil {
+		_ = session.InteractionRespond(interaction.Interaction, response)
+	}
 }

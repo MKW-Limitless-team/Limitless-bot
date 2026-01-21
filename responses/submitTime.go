@@ -44,7 +44,7 @@ func SubmitTimeData(interaction *discordgo.InteractionCreate) *discordgo.Interac
 	}
 
 	args := interaction.ApplicationCommandData().Options
-	category := utils.GetArgument(args, "category").StringValue()
+	category := utils.GetOption(args, "category").StringValue()
 	userID := interaction.Member.User.ID
 	err = db.SubmitTime(rkgData, userID, category, url)
 	viewSubmission(rkgData)

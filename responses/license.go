@@ -26,7 +26,7 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 	if len(args) == 0 {
 		userID = interaction.Member.User.ID
 	} else {
-		user := utils.GetArgument(args, "user").UserValue(session)
+		user := utils.GetOption(args, "user").UserValue(session)
 		userID = user.ID
 	}
 
