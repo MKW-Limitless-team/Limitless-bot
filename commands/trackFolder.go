@@ -12,7 +12,8 @@ var (
 )
 
 func TrackFolderCommand() *discordgo.ApplicationCommand {
-	command := c.NewChatApplicationCommand(TRACKFOLDER_COMMAND, "Gets the name of the time-trial folder for a selected track")
+	command := c.NewChatApplicationCommand(TRACKFOLDER_COMMAND, "Gets the name of the time-trial folder for a selected track").
+		SetDefaultMemberPermissions(discordgo.PermissionViewChannel)
 
 	track := c.NewCommandOption(TRACK_OPTION_NAME, "name of track", discordgo.ApplicationCommandOptionString, true).
 		SetAutoComplete(true)
