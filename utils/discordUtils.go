@@ -48,6 +48,16 @@ func GetArgument(options []*discordgo.ApplicationCommandInteractionDataOption, n
 	return nil
 }
 
+func GetFocusedOption(options []*discordgo.ApplicationCommandInteractionDataOption) (option *discordgo.ApplicationCommandInteractionDataOption) {
+	for _, option := range options {
+		if option.Focused {
+			return option
+		}
+	}
+
+	return nil
+}
+
 func GetAttachment(interaction *discordgo.InteractionCreate) *discordgo.MessageAttachment {
 	var file *discordgo.MessageAttachment
 

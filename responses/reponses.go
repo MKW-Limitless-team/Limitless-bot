@@ -7,9 +7,10 @@ import (
 )
 
 var (
-	CommandResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
-	InteractionResps = make([]*InteractionResp, 0)
-	ModalResponses   = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
+	CommandResponses      = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
+	InteractionResps      = make([]*InteractionResp, 0)
+	ModalResponses        = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse{}
+	AutoCompleteResponses = map[string]func(session *discordgo.Session, interaction *discordgo.InteractionCreate, focusedOption *discordgo.ApplicationCommandInteractionDataOption) *discordgo.InteractionResponse{}
 )
 
 type InteractionResp struct {
@@ -42,6 +43,9 @@ func RegisterResponses() {
 	ModalResponses[TABLE_SUBMIT] = TableResponse
 	ModalResponses[EDIT_TABLE_SUBMIT] = EditTableResponse
 	ModalResponses[EVENT_SUBMIT] = GenerateEventsResponse
+
+	// Add autocomplete responses here
+	AutoCompleteResponses[commands.TRACK_OPTION_NAME] = TrackFolderAutoComplete
 }
 
 func GetInteraction(ID string, responses []*InteractionResp) *InteractionResp {

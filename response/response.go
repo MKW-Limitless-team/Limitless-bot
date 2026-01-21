@@ -17,6 +17,12 @@ func newInteractionResponse(responseType discordgo.InteractionResponseType) *Res
 	return response
 }
 
+func NewAutoCompleteResponse() *Response {
+	response := newInteractionResponse(discordgo.InteractionApplicationCommandAutocompleteResult)
+
+	return response
+}
+
 func NewMessageResponse() *Response {
 	response := newInteractionResponse(discordgo.InteractionResponseChannelMessageWithSource)
 
