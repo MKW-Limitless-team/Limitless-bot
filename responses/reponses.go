@@ -32,6 +32,7 @@ func RegisterResponses() {
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
 	CommandResponses[commands.TRACKLIST_COMMAND] = TracklistResponse
+	CommandResponses[commands.TRACKFOLDER_COMMAND] = TrackFolderResponse
 
 	// Add interaction reponses here
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage})

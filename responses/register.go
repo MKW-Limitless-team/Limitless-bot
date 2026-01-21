@@ -49,8 +49,8 @@ func RegistrationResponseData(session *discordgo.Session, interaction *discordgo
 	args := interaction.ApplicationCommandData().Options
 
 	userID := interaction.Member.User.ID
-	ign := utils.GetArgument(args, "ign").StringValue()
-	fc := utils.GetArgument(args, "fc").StringValue()
+	ign := utils.GetOption(args, "ign").StringValue()
+	fc := utils.GetOption(args, "fc").StringValue()
 
 	err := db.RegisterPlayer(ign, fc, userID)
 
