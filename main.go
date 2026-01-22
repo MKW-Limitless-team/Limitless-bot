@@ -30,9 +30,7 @@ func main() {
 
 	globals.Initialize(globals.SQLITEFILE)
 
-	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged |
-		discordgo.IntentsGuildMessages |
-		discordgo.IntentsMessageContent
+	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	events.RegisterEvents(session)
 
