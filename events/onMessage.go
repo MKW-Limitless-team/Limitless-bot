@@ -1,14 +1,10 @@
 package events
 
 import (
-	"io"
-	"limitless-bot/messeges"
 	"limitless-bot/responses"
-	"net/http"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/nwoik/generate-mii/rkg"
 )
 
 func OnMessage(session *discordgo.Session, msg *discordgo.MessageCreate) {
@@ -20,29 +16,29 @@ func OnMessage(session *discordgo.Session, msg *discordgo.MessageCreate) {
 		}
 	}
 
-	attachments := message.Attachments
-	if !msg.Author.Bot && message.Content == "" && isTimeTrialSubmission(message.Attachments) {
-		ok := true
-		for _, attachment := range attachments {
-			resp, err := http.Get(attachment.URL)
-			if err == nil {
-				rkgData, err := io.ReadAll(resp.Body)
-				defer resp.Body.Close()
-				if err == nil {
-					readable := rkg.ConvertRkg(rkg.ParseRKG(rkgData))
-					embed := messeges.RkgEmbed(message, attachment, readable)
-					_, err := session.ChannelMessageSendEmbed(msg.ChannelID, embed)
-					if err != nil {
-						ok = false
-					}
-				}
-			}
-		}
+	// attachments := message.Attachments
+	// if !msg.Author.Bot && message.Content == "" && isTimeTrialSubmission(message.Attachments) {
+	// 	ok := true
+	// 	for _, attachment := range attachments {
+	// 		resp, err := http.Get(attachment.URL)
+	// 		if err == nil {
+	// 			rkgData, err := io.ReadAll(resp.Body)
+	// 			defer resp.Body.Close()
+	// 			if err == nil {
+	// 				readable := rkg.ConvertRkg(rkg.ParseRKG(rkgData))
+	// 				embed := messeges.RkgEmbed(message, attachment, readable)
+	// 				_, err := session.ChannelMessageSendEmbed(msg.ChannelID, embed)
+	// 				if err != nil {
+	// 					ok = false
+	// 				}
+	// 			}
+	// 		}
+	// 	}
 
-		if ok {
-			session.ChannelMessageDelete(msg.ChannelID, msg.ID)
-		}
-	}
+	// 	if ok {
+	// 		session.ChannelMessageDelete(msg.ChannelID, msg.ID)
+	// 	}
+	// }
 }
 
 func isTimeTrialSubmission(attachments []*discordgo.MessageAttachment) bool {
