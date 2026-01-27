@@ -33,6 +33,7 @@ func RegisterResponses() {
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
 	CommandResponses[commands.TRACKLIST_COMMAND] = TracklistResponse
 	CommandResponses[commands.TRACKFOLDER_COMMAND] = TrackFolderResponse
+	CommandResponses[commands.RKG_COMMAND] = RKGResponse
 
 	// Add interaction reponses here
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage})
@@ -46,7 +47,7 @@ func RegisterResponses() {
 	ModalResponses[EVENT_SUBMIT] = GenerateEventsResponse
 
 	// Add autocomplete responses here
-	AutoCompleteResponses[commands.TRACK_OPTION_NAME] = TrackFolderAutoComplete
+	AutoCompleteResponses[commands.TRACK_OPTION_NAME] = TrackNameAutoComplete
 }
 
 func GetInteraction(ID string, responses []*InteractionResp) *InteractionResp {

@@ -16,6 +16,7 @@ func RegisterCommands(session *discordgo.Session) error {
 	GlobalCommands = append(GlobalCommands, GenerateEventsCommand())
 	GlobalCommands = append(GlobalCommands, TracklistCommand())
 	GlobalCommands = append(GlobalCommands, TrackFolderCommand())
+	GlobalCommands = append(GlobalCommands, RKGCommand())
 	// GlobalCommands = append(GlobalCommands, LeaderBoardCommand())
 	// GlobalCommands = append(GlobalCommands, RegisterCommand())
 	// GlobalCommands = append(GlobalCommands, SubmitTimeCommand())

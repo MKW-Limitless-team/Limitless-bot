@@ -29,14 +29,14 @@ func TrackFolderData(interaction *discordgo.InteractionCreate) *discordgo.Intera
 	}
 }
 
-func TrackFolderAutoComplete(session *discordgo.Session, interaction *discordgo.InteractionCreate, focusedOption *discordgo.ApplicationCommandInteractionDataOption) *discordgo.InteractionResponse {
+func TrackNameAutoComplete(session *discordgo.Session, interaction *discordgo.InteractionCreate, focusedOption *discordgo.ApplicationCommandInteractionDataOption) *discordgo.InteractionResponse {
 	response := response.NewAutoCompleteResponse().
-		SetResponseData(TrackFolderAutoCompleteData(focusedOption))
+		SetResponseData(TrackNameAutoCompleteData(focusedOption))
 
 	return response.InteractionResponse
 }
 
-func TrackFolderAutoCompleteData(focusedOption *discordgo.ApplicationCommandInteractionDataOption) *discordgo.InteractionResponseData {
+func TrackNameAutoCompleteData(focusedOption *discordgo.ApplicationCommandInteractionDataOption) *discordgo.InteractionResponseData {
 	choices := make([]*discordgo.ApplicationCommandOptionChoice, 0)
 	value := focusedOption.StringValue()
 
