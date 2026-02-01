@@ -76,7 +76,7 @@ func RkgEmbed(interaction *discordgo.InteractionCreate, track string, readable *
 	finish := header.FinishTime
 	fmt.Fprint(&timeDetails, "**`Time Details:`**\n")
 
-	finishTime := "**Finish Time:** `%d:%d:%d`\n"
+	finishTime := "**Finish Time:** `%s:%s:%s`\n"
 	fmt.Fprintf(&timeDetails, finishTime, strTime(finish.Minutes), strTime(finish.Seconds), strTime(finish.Milliseconds))
 	fmt.Fprintf(&timeDetails, "%s\n", divider(finishTime))
 	for index, lap := range header.Laps {
