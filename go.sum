@@ -10,6 +10,8 @@ github.com/MKW-Limitless-team/limitless-types v1.0.13 h1:uqbEHDn/mvjXzDXJfga7frB
 github.com/MKW-Limitless-team/limitless-types v1.0.13/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
 github.com/MKW-Limitless-team/limitless-types v1.0.14 h1:T1eKrcP4xShWdBRtw8WISRX1IeLvnwTGT+0y9kxLm2A=
 github.com/MKW-Limitless-team/limitless-types v1.0.14/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
+github.com/MKW-Limitless-team/limitless-types v1.0.15 h1:WJjEPMt4tS2LO613rZ9a7sRd4Hb5L5ZIWiKTxPvPKWI=
+github.com/MKW-Limitless-team/limitless-types v1.0.15/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
 github.com/bwmarrin/discordgo v0.29.0 h1:FmWeXFaKUwrcL3Cx65c20bTRW+vOb6k8AnaP+EgjDno=
 github.com/bwmarrin/discordgo v0.29.0/go.mod h1:NJZpH+1AfhIcyQsPeuBKsUtYrRnjkyu0kIVMCHkZtRY=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
