@@ -1,13 +1,16 @@
 package responses
 
 import (
+	"encoding/json"
 	"fmt"
 	e "limitless-bot/components/embed"
 	"limitless-bot/response"
 	"limitless-bot/utils"
-	"limitless-bot/utils/db"
-	"limitless-bot/utils/ltrc"
+	"net/http"
 
+	"github.com/MKW-Limitless-team/limitless-types/ltrc"
+	"github.com/MKW-Limitless-team/limitless-types/responses"
+	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -21,42 +24,47 @@ func LicenseResponse(session *discordgo.Session, interaction *discordgo.Interact
 func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	var data *response.Data
 	var userID string
-	args := interaction.ApplicationCommandData().Options
+	options := interaction.ApplicationCommandData().Options
 
-	if len(args) == 0 {
+	if len(options) == 0 {
 		userID = interaction.Member.User.ID
 	} else {
-		user := utils.GetOption(args, "user").UserValue(session)
+		user := utils.GetOption(options, "user").UserValue(session)
 		userID = user.ID
 	}
 
-	playerData, err := db.GetPlayer(userID)
+	resp, err := http.Get("http://localhost:8080/player?discord_id=" + userID)
 
 	if err != nil {
-		return response.NewResponseData(err.Error()).InteractionResponseData
+		return response.NewResponseData("Unable to get license data").InteractionResponseData
 	}
 
 	data = response.NewResponseData("")
 
-	guild := utils.GetGuild(session, interaction.GuildID)
-	embed := LicenseEmbed(playerData, guild)
+	var jsonResponse *responses.PlayerInfoResponse
+
+	json.NewDecoder(resp.Body).Decode(&jsonResponse)
+
+	if jsonResponse.Status == responses.Failure {
+		return data.SetContent(jsonResponse.Message).InteractionResponseData
+	}
+
+	embed := LicenseEmbed(jsonResponse.PlayerData, jsonResponse.User)
 	data.AddEmbed(embed)
 
 	return data.InteractionResponseData
 }
 
-func LicenseEmbed(playerData *ltrc.PlayerData, guild *discordgo.Guild) *e.Embed {
+func LicenseEmbed(playerData *ltrc.PlayerData, user *wwfc.User) *e.Embed {
+	embed := e.NewRichEmbed(user.LastInGameSn, fmt.Sprintf("<@%s>", playerData.DiscordID), 0xd70ccf)
 
-	embed := e.NewRichEmbed(playerData.Name, fmt.Sprintf("<@%s>", playerData.DiscordID), 0xd70ccf)
-
-	embed.AddField("", fmt.Sprintf("**Friend-Code:** %s", playerData.FriendCode), false)
+	embed.AddField("", fmt.Sprintf("**Friend-Code:** %s", playerData.GetFC()), false)
 	embed.AddField("", fmt.Sprintf("**MMR:** %d", playerData.Mmr), false)
 
-	if playerData.Mii != "" {
-		embed.SetThumbnail(playerData.ShowMii())
+	if user.FriendInfo != "" {
+		embed.SetThumbnail(wwfc.ShowMii(user.GetMii()))
 	} else {
-		embed.SetThumbnail(guild.IconURL(""))
-		embed.AddField("", "**No mii found, use /edit-mii to set license icon**", false)
+		embed.AddField("", "`No mii found, use /edit-mii to set license icon`", false)
 	}
 
 	return embed

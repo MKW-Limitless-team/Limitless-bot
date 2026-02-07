@@ -1,66 +1,50 @@
 package responses
 
 import (
+	"encoding/json"
+	"fmt"
 	"limitless-bot/response"
 	"limitless-bot/utils"
-	"limitless-bot/utils/db"
+	"log"
+	"net/http"
+	"strings"
 
+	"github.com/MKW-Limitless-team/limitless-types/responses"
 	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	// REGISTRATION_FORM    = "registration_form"
-	REGISTRATON_RESPONSE = "registration_response"
+	REGISTER = "register"
 )
 
-// func RegistrationFormResponse() *discordgo.InteractionResponse {
-// 	response := response.NewModalResponse().
-// 		SetResponseData(RegistrationFormData())
-
-// 	return response.InteractionResponse
-// }
-
-// func RegistrationFormData() *discordgo.InteractionResponseData {
-// 	data := response.NewFormData("Registration Form", REGISTRATION_FORM)
-
-// 	actionRow := components.NewActionRow()
-// 	ign := modal.NewTextField("In-Game name", "ign", "In-game name", true)
-// 	actionRow.AddComponent(ign)
-// 	data.AddComponent(actionRow)
-
-// 	actionRow = components.NewActionRow()
-// 	fc := modal.NewTextField("Friend code", "fc", "Friend code", true)
-// 	data.AddComponent(actionRow)
-// 	actionRow.AddComponent(fc)
-
-// 	return data.InteractionResponseData
-// }
-
-func RegistrationResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+func Register(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.NewMessageResponse().
-		SetResponseData(RegistrationResponseData(session, interaction))
+		SetResponseData(RegisterData(session, interaction))
 
 	return response.InteractionResponse
 }
 
-func RegistrationResponseData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
-	var data *response.Data
-
+func RegisterData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	args := interaction.ApplicationCommandData().Options
 
 	userID := interaction.Member.User.ID
-	ign := utils.GetOption(args, "ign").StringValue()
-	fc := utils.GetOption(args, "fc").StringValue()
+	fc := utils.GetOption(args, "friend_code").StringValue()
+	fc = strings.ReplaceAll(fc, "-", "")
 
-	err := db.RegisterPlayer(ign, fc, userID)
+	log.Printf("Registering: %s - %s", interaction.Member.User.Username, fc)
+
+	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/register?discord_id=%s&friend_code=%s", userID, fc))
 
 	if err != nil {
-		return response.NewResponseData(err.Error()).InteractionResponseData
+		return response.NewResponseData("Unable to register player, contact admin").InteractionResponseData
 	}
 
-	guild := utils.GetGuild(session, interaction.GuildID)
-	playerData, _ := db.GetPlayer(userID)
-	data = response.NewResponseData("").AddEmbed(LicenseEmbed(playerData, guild))
+	var jsonResponse *responses.PlayerInfoResponse
+	json.NewDecoder(resp.Body).Decode(&jsonResponse)
 
-	return data.InteractionResponseData
+	if jsonResponse.Status == responses.Failure {
+		return response.NewResponseData(jsonResponse.Message).InteractionResponseData
+	}
+
+	return response.NewResponseData(jsonResponse.Message + ". Use /license to see your profile").InteractionResponseData
 }

@@ -7,10 +7,10 @@ import (
 	e "limitless-bot/components/embed"
 	"limitless-bot/response"
 	"limitless-bot/utils"
-	"limitless-bot/utils/ltrc"
 	"strconv"
 	"strings"
 
+	"github.com/MKW-Limitless-team/limitless-types/ltrc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -50,9 +50,9 @@ func LeaderBoardData(guild *discordgo.Guild, page int) *discordgo.InteractionRes
 	for i := range playersPerPage {
 		index := start + i
 		if index < len(playerData) {
-			player := playerData[index]
+			// player := playerData[index]
 
-			embed.AddField("", fmt.Sprintf("**%d.** %s: %d", index+1, player.Name, player.Mmr), false)
+			// embed.AddField("", fmt.Sprintf("**%d.** %s: %d", index+1, player.Name, player.Mmr), false)
 		} else {
 			end = true
 			embed.AddField("End", ":rewind: :regional_indicator_b: :regional_indicator_a: :regional_indicator_c: :regional_indicator_k: ", false)

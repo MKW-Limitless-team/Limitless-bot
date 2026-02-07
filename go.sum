@@ -4,6 +4,12 @@ cloud.google.com/go/auth/oauth2adapt v0.2.8 h1:keo8NaayQZ6wimpNSmW5OPc283g65QNIi
 cloud.google.com/go/auth/oauth2adapt v0.2.8/go.mod h1:XQ9y31RkqZCcwJWNSx2Xvric3RrU88hAYYbjDWYDL+c=
 cloud.google.com/go/compute/metadata v0.9.0 h1:pDUj4QMoPejqq20dK0Pg2N4yG9zIkYGdBtwLoEkH9Zs=
 cloud.google.com/go/compute/metadata v0.9.0/go.mod h1:E0bWwX5wTnLPedCKqk3pJmVgCBSM6qQI1yTBdEb3C10=
+github.com/MKW-Limitless-team/limitless-types v1.0.10 h1:z4R1AEM5rPJIhyNYvTPMCwEaelFPNyf7dsvfBaLSwKU=
+github.com/MKW-Limitless-team/limitless-types v1.0.10/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
+github.com/MKW-Limitless-team/limitless-types v1.0.13 h1:uqbEHDn/mvjXzDXJfga7frB5wg9eBgLS2OaTedWp/+Y=
+github.com/MKW-Limitless-team/limitless-types v1.0.13/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
+github.com/MKW-Limitless-team/limitless-types v1.0.14 h1:T1eKrcP4xShWdBRtw8WISRX1IeLvnwTGT+0y9kxLm2A=
+github.com/MKW-Limitless-team/limitless-types v1.0.14/go.mod h1:5WH5/urySdHpI9UPKbtsw3V1rndZ7UKiW7x8iB2Kkf4=
 github.com/bwmarrin/discordgo v0.29.0 h1:FmWeXFaKUwrcL3Cx65c20bTRW+vOb6k8AnaP+EgjDno=
 github.com/bwmarrin/discordgo v0.29.0/go.mod h1:NJZpH+1AfhIcyQsPeuBKsUtYrRnjkyu0kIVMCHkZtRY=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
