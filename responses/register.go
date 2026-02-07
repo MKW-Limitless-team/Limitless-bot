@@ -46,5 +46,5 @@ func RegisterData(session *discordgo.Session, interaction *discordgo.Interaction
 		return response.NewResponseData(jsonResponse.Message).InteractionResponseData
 	}
 
-	return response.NewResponseData(jsonResponse.Message + ". Use /license to see your profile").InteractionResponseData
+	return response.NewResponseData(jsonResponse.Message + "\nUse `/license` to see your profile").InteractionResponseData
 }

@@ -46,7 +46,7 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 	json.NewDecoder(resp.Body).Decode(&jsonResponse)
 
 	if jsonResponse.Status == responses.Failure {
-		return data.SetContent(jsonResponse.Message).InteractionResponseData
+		return data.SetContent(jsonResponse.Message + "\nUse `/register` if you haven't registered already").InteractionResponseData
 	}
 
 	embed := LicenseEmbed(jsonResponse.PlayerData, jsonResponse.User)
