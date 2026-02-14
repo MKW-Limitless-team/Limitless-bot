@@ -16,11 +16,11 @@ func CreateTimeStamp(t time.Time) string {
 func DayToString(day int) string {
 	dayStr := fmt.Sprint(day)
 
-	if strings.HasSuffix(dayStr, "1") {
+	if strings.HasSuffix(dayStr, "1") && !strings.HasSuffix(dayStr, "11") {
 		dayStr += "st"
-	} else if strings.HasSuffix(dayStr, "2") {
+	} else if strings.HasSuffix(dayStr, "2") && !strings.HasSuffix(dayStr, "12") {
 		dayStr += "nd"
-	} else if strings.HasSuffix(dayStr, "3") {
+	} else if strings.HasSuffix(dayStr, "3") && !strings.HasSuffix(dayStr, "13") {
 		dayStr += "rd"
 	} else {
 		dayStr += "th"
