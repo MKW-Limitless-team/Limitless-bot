@@ -48,7 +48,7 @@ func TracklistData(session *discordgo.Session, interaction *discordgo.Interactio
 
 	// Sort tracks alphabetically
 	sort.Slice(tracks, func(i, j int) bool {
-		return tracks[i].Name < tracks[j].Name
+		return strings.ToLower(tracks[i].Name) < strings.ToLower(tracks[j].Name)
 	})
 
 	for _, track := range tracks {
