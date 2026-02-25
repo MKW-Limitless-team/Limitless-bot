@@ -24,7 +24,7 @@ func getMKWIIStats(session *discordgo.Session) {
 			resp, err := http.Get("http://localhost/api/stats?game=mariokartwii")
 
 			if err != nil {
-				UpdateStatus(session, "🎮 Mario Kart Wii: Limitless")
+				UpdateStatus(session, "🎮 Limitlink is down 😵")
 			} else {
 				stats := map[string]*responses.Stats{}
 				err = json.NewDecoder(resp.Body).Decode(&stats)
