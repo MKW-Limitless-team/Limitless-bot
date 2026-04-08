@@ -28,12 +28,13 @@ func RegisterData(session *discordgo.Session, interaction *discordgo.Interaction
 	args := interaction.ApplicationCommandData().Options
 
 	userID := interaction.Member.User.ID
+	name := utils.GetOption(args, "name").StringValue()
 	fc := utils.GetOption(args, "friend_code").StringValue()
 	fc = strings.ReplaceAll(fc, "-", "")
 
 	log.Printf("Registering: %s - %s", interaction.Member.User.Username, fc)
 
-	resp, err := http.Get(fmt.Sprintf("http://localhost:5000/register?discord_id=%s&friend_code=%s", userID, fc))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:5000/register?name=%s&discord_id=%s&friend_code=%s", name, userID, fc))
 
 	if err != nil {
 		return response.NewResponseData("Unable to register player, contact admin").InteractionResponseData

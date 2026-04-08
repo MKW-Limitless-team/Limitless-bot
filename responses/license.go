@@ -56,7 +56,7 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 }
 
 func LicenseEmbed(playerData *ltrc.PlayerData, user *wwfc.User) *e.Embed {
-	embed := e.NewRichEmbed(user.LastInGameSn, fmt.Sprintf("<@%s>", playerData.DiscordID), 0xd70ccf)
+	embed := e.NewRichEmbed(playerData.Name, fmt.Sprintf("<@%s>", playerData.DiscordID), 0xd70ccf)
 
 	embed.AddField("", fmt.Sprintf("**Friend-Code:** %s", playerData.GetFC()), false)
 	embed.AddField("", fmt.Sprintf("**MMR:** %d", playerData.Mmr), false)
