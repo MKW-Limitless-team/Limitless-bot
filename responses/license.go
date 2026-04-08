@@ -33,7 +33,7 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 		userID = user.ID
 	}
 
-	resp, err := http.Get("http://localhost:8080/player?discord_id=" + userID)
+	resp, err := http.Get("http://localhost:5000/player?discord_id=" + userID)
 
 	if err != nil {
 		return response.NewResponseData("Unable to get license data").InteractionResponseData

@@ -33,7 +33,7 @@ func RegisterData(session *discordgo.Session, interaction *discordgo.Interaction
 
 	log.Printf("Registering: %s - %s", interaction.Member.User.Username, fc)
 
-	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/register?discord_id=%s&friend_code=%s", userID, fc))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:5000/register?discord_id=%s&friend_code=%s", userID, fc))
 
 	if err != nil {
 		return response.NewResponseData("Unable to register player, contact admin").InteractionResponseData
