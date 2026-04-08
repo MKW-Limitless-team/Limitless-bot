@@ -24,9 +24,8 @@ func RegisterResponses() {
 	CommandResponses[commands.HELP_COMMAND] = HelpResponse
 	CommandResponses[commands.PING_COMMAND] = PingResponse
 	CommandResponses[commands.LEADERBOARD_COMMAND] = LeaderBoardResponse
-	CommandResponses[commands.REGISTER_COMMAND] = RegistrationResponse
+	CommandResponses[commands.REGISTER_COMMAND] = Register
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
-	CommandResponses[commands.EDIT_MII_COMMAND] = EditMiiResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
@@ -36,9 +35,9 @@ func RegisterResponses() {
 	CommandResponses[commands.RKG_COMMAND] = RKGResponse
 
 	// Add interaction reponses here
-	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage})
-	InteractionResps = append(InteractionResps, &InteractionResp{ID: HOME_BUTTON, Respond: LeaderBoardResponse})
-	InteractionResps = append(InteractionResps, &InteractionResp{ID: NEXT_BUTTON, Respond: IncPage})
+	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
+	InteractionResps = append(InteractionResps, &InteractionResp{ID: HOME_BUTTON, Respond: LeaderBoardResponse, Permission: int64(discordgo.PermissionViewChannel)})
+	InteractionResps = append(InteractionResps, &InteractionResp{ID: NEXT_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: TABLE_EDIT_BUTTON, Respond: EditTableRequest, Permission: int64(discordgo.PermissionManageMessages)})
 
 	// Add modal responses here

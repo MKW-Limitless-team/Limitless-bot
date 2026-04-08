@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"limitless-bot/commands"
 	"limitless-bot/events"
-	"limitless-bot/globals"
 	"limitless-bot/responses"
 	"limitless-bot/utils"
 	"log"
@@ -28,8 +27,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	globals.Initialize(globals.SQLITEFILE)
-
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	events.RegisterEvents(session)
@@ -52,7 +49,6 @@ func main() {
 	utils.FolderNames = utils.PopulateFolderNames("./folderNames.csv", utils.FolderNames)
 
 	defer session.Close()
-	defer globals.GetConnection().Close()
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
