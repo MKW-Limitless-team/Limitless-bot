@@ -28,9 +28,10 @@ func LicenseData(session *discordgo.Session, interaction *discordgo.InteractionC
 
 	if len(options) == 0 {
 		userID = interaction.Member.User.ID
-	} else {
-		user := utils.GetOption(options, "user").UserValue(session)
-		userID = user.ID
+		userOption := utils.GetOption(options, "user")
+		if userOption != nil {
+			userID = userOption.UserValue(session).ID
+		}
 	}
 
 	resp, err := http.Get("http://localhost:5000/player?discord_id=" + userID)

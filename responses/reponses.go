@@ -25,6 +25,7 @@ func RegisterResponses() {
 	CommandResponses[commands.PING_COMMAND] = PingResponse
 	CommandResponses[commands.LEADERBOARD_COMMAND] = LeaderBoardResponse
 	CommandResponses[commands.REGISTER_COMMAND] = Register
+	CommandResponses[commands.EDIT_LICENSE_COMMAND] = EditLicenseResponse
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
