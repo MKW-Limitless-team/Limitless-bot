@@ -52,8 +52,5 @@ func EditLicenseData(session *discordgo.Session, interaction *discordgo.Interact
 		return response.NewResponseData(jsonResponse.Message).InteractionResponseData
 	}
 
-	data := response.NewResponseData("")
-	data.AddEmbed(LicenseEmbed(jsonResponse.PlayerData, jsonResponse.User))
-
-	return data.InteractionResponseData
+	return LicenseData(session, interaction)
 }
