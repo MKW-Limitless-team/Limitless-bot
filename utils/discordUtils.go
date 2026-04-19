@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -98,6 +99,20 @@ func HasPermission(member *discordgo.Member, requiredPermission int64) bool {
 	}
 
 	return member.Permissions&(requiredPermission) == requiredPermission
+}
+
+func HasRole(member *discordgo.Member, roleID string) bool {
+	return slices.Contains(member.Roles, roleID)
+}
+
+func GetRole(roles []*discordgo.Role, roleID string) *discordgo.Role {
+	for _, role := range roles {
+		if role.ID == roleID {
+			return role
+		}
+	}
+
+	return nil
 }
 
 func HexToInt(hex string) int {
