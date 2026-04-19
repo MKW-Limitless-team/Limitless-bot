@@ -85,6 +85,9 @@ func GetSubmitDataValueByID(submitData discordgo.ModalSubmitInteractionData, id 
 				if textInput.CustomID == id {
 					return textInput.Value, nil
 				}
+				// case discordgo.SelectMenuComponent:
+				// 	menuComponent := input.(*discordgo.SelectMenu)
+				// 	menuComponent.
 			}
 		}
 	}

@@ -34,6 +34,7 @@ func RegisterResponses() {
 	CommandResponses[commands.TRACKLIST_COMMAND] = TracklistResponse
 	CommandResponses[commands.TRACKFOLDER_COMMAND] = TrackFolderResponse
 	CommandResponses[commands.RKG_COMMAND] = RKGResponse
+	CommandResponses[commands.BAN_COMMAND] = BanRequest
 
 	// Add interaction reponses here
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
