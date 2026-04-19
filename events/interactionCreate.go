@@ -47,6 +47,10 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 	}
 
 	if response != nil {
-		_ = session.InteractionRespond(interaction.Interaction, response)
+		err := session.InteractionRespond(interaction.Interaction, response)
+
+		if err != nil {
+			println(err.Error())
+		}
 	}
 }

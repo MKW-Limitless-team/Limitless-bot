@@ -11,7 +11,7 @@ var (
 )
 
 func BanCommand() *discordgo.ApplicationCommand {
-	command := c.NewChatApplicationCommand(BAN_COMMAND, "Bans a player").
+	command := c.NewChatApplicationCommand(BAN_COMMAND, "Bans a player from Limitlink").
 		SetDefaultMemberPermissions(discordgo.PermissionBanMembers)
 
 	return command.ApplicationCommand

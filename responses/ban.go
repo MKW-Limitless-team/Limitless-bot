@@ -1,13 +1,19 @@
 package responses
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"limitless-bot/components"
 	"limitless-bot/components/modal"
-	"limitless-bot/response"
+	"limitless-bot/globals"
+	r "limitless-bot/response"
 	"limitless-bot/utils"
+	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/MKW-Limitless-team/limitless-types/responses"
 	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
 )
@@ -29,13 +35,19 @@ type BanRequestSpec struct {
 }
 
 func BanRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
-	response := response.NewModalResponse().SetResponseData(BanForm())
+	hasRole := utils.HasRole(interaction.Member, globals.ADMIN_ROLE)
+	var response *r.Response
+	if hasRole {
+		response = r.NewModalResponse().SetResponseData(BanForm())
+	} else {
+		response = r.NewMessageResponse().SetResponseData(r.NewResponseData("User lacks sufficient role to use the `/ban` command").InteractionResponseData)
+	}
 
 	return response.InteractionResponse
 }
 
 func BanForm() *discordgo.InteractionResponseData {
-	data := response.NewFormData("Ban Form", BAN_SUBMIT)
+	data := r.NewFormData("Ban Form", BAN_SUBMIT)
 
 	actionRow := components.NewActionRow()
 	fc := modal.NewTextField("Friend-Code", "friend-code", "", true)
@@ -48,14 +60,7 @@ func BanForm() *discordgo.InteractionResponseData {
 	data.AddComponent(actionRow)
 
 	actionRow = components.NewActionRow()
-	tos := modal.NewStringSelectMenu("Tos", 1, 1)
-	tos.AddMenuOption(modal.NewSelectMenuOption("False", "false"))
-	tos.AddMenuOption(modal.NewSelectMenuOption("True", "true"))
-	actionRow.AddComponent(tos.SelectMenu)
-	data.AddComponent(actionRow)
-
-	actionRow = components.NewActionRow()
-	reason := modal.NewTextArea("Reason", "reason", false)
+	reason := modal.NewTextArea("Reason", "reason", true)
 	actionRow.AddComponent(reason)
 	data.AddComponent(actionRow)
 
@@ -63,20 +68,20 @@ func BanForm() *discordgo.InteractionResponseData {
 }
 
 func BanResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
-	response := response.NewModalResponse().SetResponseData(BanData(session, interaction))
+	response := r.NewMessageResponse().SetResponseData(BanData(interaction))
 
 	return response.InteractionResponse
 }
 
-func BanData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
-	data := response.NewResponseData("")
+func BanData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
+	data := r.NewResponseData("")
 	submitData := interaction.ModalSubmitData()
 
 	friendCode, _ := utils.GetSubmitDataValueByID(submitData, "friend-code")
 	fc, err := strconv.Atoi(strings.ReplaceAll(friendCode, "-", ""))
 
 	if err != nil {
-		return response.NewResponseData("Invalid friend-code").InteractionResponseData
+		return r.NewResponseData("Invalid friend-code").InteractionResponseData
 	}
 
 	daysStr, _ := utils.GetSubmitDataValueByID(submitData, "days")
@@ -86,12 +91,53 @@ func BanData(session *discordgo.Session, interaction *discordgo.InteractionCreat
 		days = 365
 	}
 
-	// tosStr, _ := utils.GetSubmitDataValueByID(submitData, "tos")
-	// tos := strconv.ParseBool()
+	reason, _ := utils.GetSubmitDataValueByID(submitData, "reason")
 
-	banReqSpec := &BanRequestSpec{}
-	banReqSpec.ProfileID = uint32(wwfc.FCToPid(uint64(fc)))
-	banReqSpec.Days = uint64(days)
+	profileID := uint32(wwfc.FCToPid(uint64(fc)))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:5000/user?profile_id=%d", profileID))
+
+	if err != nil {
+		return r.NewResponseData("Can't verify if player exists. (contact admin)").InteractionResponseData
+	}
+
+	var jsonResponse *responses.PlayerInfoResponse
+	json.NewDecoder(resp.Body).Decode(&jsonResponse)
+
+	if jsonResponse.Status == responses.Failure {
+		return r.NewResponseData("User doesn't exist").InteractionResponseData
+	}
+
+	user := jsonResponse.User
+	if user.HasBan {
+		return r.NewResponseData(fmt.Sprintf("User `{%s:%s}` already banned", user.LastInGameSn, friendCode)).InteractionResponseData
+	}
+
+	banReqSpec := &BanRequestSpec{
+		Secret:    globals.SECRET,
+		ProfileID: uint32(user.ProfileID),
+		Days:      uint64(days),
+		Tos:       true,
+		Reason:    reason,
+		Moderator: interaction.Member.DisplayName(),
+	}
+
+	marshalled, err := json.Marshal(banReqSpec)
+
+	if err != nil {
+		return r.NewResponseData("Failed to form ban request").InteractionResponseData
+	}
+
+	resp, err = http.Post("http://localhost/api/ban", "application/json", bytes.NewBuffer(marshalled))
+
+	var responseJson map[string]string
+	json.NewDecoder(resp.Body).Decode(&responseJson)
+
+	_, ok := responseJson["success"]
+	if ok {
+		data.SetContent(fmt.Sprintf("Banned **%s** from Limitlink\nDuration: **%d**\nReason: `%s`", friendCode, days, reason))
+	} else {
+		data.SetContent("Failed to ban user")
+	}
 
 	return data.InteractionResponseData
 }

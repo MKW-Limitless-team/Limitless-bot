@@ -46,6 +46,7 @@ func RegisterResponses() {
 	ModalResponses[TABLE_SUBMIT] = TableResponse
 	ModalResponses[EDIT_TABLE_SUBMIT] = EditTableResponse
 	ModalResponses[EVENT_SUBMIT] = GenerateEventsResponse
+	ModalResponses[BAN_SUBMIT] = BanResponse
 
 	// Add autocomplete responses here
 	AutoCompleteResponses[commands.TRACK_OPTION_NAME] = TrackNameAutoComplete

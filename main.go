@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"limitless-bot/commands"
 	"limitless-bot/events"
+	"limitless-bot/globals"
 	"limitless-bot/responses"
 	"limitless-bot/utils"
 	"log"
@@ -18,27 +19,40 @@ import (
 )
 
 var (
-	TOKEN = os.Getenv("BEPIS_TOKEN")
+	TOKEN      = os.Getenv("BEPIS_TOKEN")
+	ADMIN_ROLE = os.Getenv("ADMIN_ROLE")
+	SECRET     = os.Getenv("SECRET")
 )
 
 func main() {
 	session, err := discordgo.New(fmt.Sprintf("Bot %s", TOKEN))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+
+	if ADMIN_ROLE == "" {
+		log.Fatal("No admin role set")
+	}
+
+	globals.ADMIN_ROLE = ADMIN_ROLE
+
+	if ADMIN_ROLE == "" {
+		log.Fatal("No secret set")
+	}
+	globals.SECRET = SECRET
 
 	events.RegisterEvents(session)
 
 	err = session.Open()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	err = commands.RegisterCommands(session)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	responses.RegisterResponses()
