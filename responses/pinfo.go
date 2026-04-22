@@ -11,7 +11,9 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
+	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -45,16 +47,16 @@ func PinfoResponse(session *discordgo.Session, interaction *discordgo.Interactio
 func PinfoData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	options := interaction.ApplicationCommandData().Options
 	friendCode := utils.GetOption(options, "friend_code").StringValue()
-	friendCode = utils.NormalizeFriendCode(friendCode)
+	friendCode = normalizeFriendCode(friendCode)
 
-	profileID, err := utils.FriendCodeToPID(friendCode)
+	fc, err := strconv.ParseUint(friendCode, 10, 64)
 	if err != nil {
 		return r.NewResponseData("Invalid friend-code").InteractionResponseData
 	}
 
 	reqBody, err := json.Marshal(&PinfoRequestSpec{
 		Secret:    globals.SECRET,
-		ProfileID: profileID,
+		ProfileID: uint32(wwfc.FCToPid(fc)),
 	})
 	if err != nil {
 		return r.NewResponseData("Failed to form pinfo request").InteractionResponseData
@@ -80,8 +82,22 @@ func PinfoData(interaction *discordgo.InteractionCreate) *discordgo.InteractionR
 	}
 
 	data := r.NewResponseData("")
-	data.AddEmbed(PinfoEmbed(utils.FormatFriendCode(friendCode), apiResponse.Player))
+	data.AddEmbed(PinfoEmbed(formatFriendCode(friendCode), apiResponse.Player))
 	return data.InteractionResponseData
+}
+
+func normalizeFriendCode(friendCode string) string {
+	friendCode = strings.ReplaceAll(friendCode, "-", "")
+	return strings.TrimSpace(friendCode)
+}
+
+func formatFriendCode(friendCode string) string {
+	friendCode = normalizeFriendCode(friendCode)
+	if len(friendCode) != 12 {
+		return friendCode
+	}
+
+	return fmt.Sprintf("%s-%s-%s", friendCode[0:4], friendCode[4:8], friendCode[8:12])
 }
 
 func PinfoEmbed(friendCode string, player PinfoPlayer) *e.Embed {
