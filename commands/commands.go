@@ -23,6 +23,7 @@ func RegisterCommands(session *discordgo.Session) error {
 	// GlobalCommands = append(GlobalCommands, SubmitTimeCommand())
 	GlobalCommands = append(GlobalCommands, LicenseCommand())
 	GlobalCommands = append(GlobalCommands, BanCommand())
+	GlobalCommands = append(GlobalCommands, UnbanCommand())
 
 	// Register commands globally
 	_, err := session.ApplicationCommandBulkOverwrite(session.State.User.ID, "", GlobalCommands)
