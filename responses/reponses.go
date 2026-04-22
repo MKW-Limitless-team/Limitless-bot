@@ -28,6 +28,7 @@ func RegisterResponses() {
 	CommandResponses[commands.EDIT_LICENSE_COMMAND] = EditLicenseResponse
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
+	CommandResponses[commands.PINFO_COMMAND] = PinfoResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
