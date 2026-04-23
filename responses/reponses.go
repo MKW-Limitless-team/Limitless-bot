@@ -36,6 +36,7 @@ func RegisterResponses() {
 	CommandResponses[commands.RKG_COMMAND] = RKGResponse
 	CommandResponses[commands.BAN_COMMAND] = BanRequest
 	CommandResponses[commands.UNBAN_COMMAND] = UnbanRequest
+	CommandResponses[commands.KICK_COMMAND] = KickRequest
 
 	// Add interaction reponses here
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: PREVIOUS_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
@@ -48,6 +49,7 @@ func RegisterResponses() {
 	ModalResponses[EDIT_TABLE_SUBMIT] = EditTableResponse
 	ModalResponses[EVENT_SUBMIT] = GenerateEventsResponse
 	ModalResponses[BAN_SUBMIT] = BanResponse
+	ModalResponses[KICK_SUBMIT] = KickResponse
 
 	// Add autocomplete responses here
 	AutoCompleteResponses[commands.TRACK_OPTION_NAME] = TrackNameAutoComplete
