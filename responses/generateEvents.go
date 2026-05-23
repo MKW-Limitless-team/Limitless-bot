@@ -81,7 +81,7 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 		events := utils.PickMany(source, utils.Modes, 2)
 
 		for j, event := range events {
-			fmt.Fprintf(&msg, "### Event %s | %s | \n", LABELS[(i*2)+j], event.Name)
+			fmt.Fprintf(&msg, "### Event %s | %s | ", LABELS[(i*2)+j], event.Name)
 			if shouldShowTeamChoice(event.Name) {
 				fmt.Fprintf(&msg, "%s\n", teamChoiceText(teamChoiceSource))
 			}
