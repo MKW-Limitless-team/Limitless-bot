@@ -73,6 +73,7 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 	var msg strings.Builder
 	msg.WriteString("# All events require a minimum 8 players, except 3v3s which require 9\n")
 	source := rand.New(rand.NewSource(seed))
+	teamChoiceSource := rand.New(rand.NewSource(seed + 1))
 
 	for i, date := range dates {
 		fmt.Fprintf(&msg, "## %s of %s\n", utils.DayToString(date.Day()), date.Month().String())
@@ -81,6 +82,9 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 
 		for j, event := range events {
 			fmt.Fprintf(&msg, "### Event %s | %s | \n", LABELS[(i*2)+j], event.Name)
+			if shouldShowTeamChoice(event.Name) {
+				fmt.Fprintf(&msg, "%s\n", teamChoiceText(teamChoiceSource))
+			}
 
 			fmt.Fprintf(&msg, "Starting Time: Between %s and %s\n",
 				utils.CreateTimeStamp(date), utils.CreateTimeStamp(date.Add(time.Hour*1+time.Minute*14)))
@@ -95,6 +99,23 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 	data.SetContent(msg.String())
 
 	return data.InteractionResponseData
+}
+
+func shouldShowTeamChoice(format string) bool {
+	switch strings.ToUpper(strings.TrimSpace(format)) {
+	case "FFA", "FFA KO":
+		return false
+	default:
+		return true
+	}
+}
+
+func teamChoiceText(source *rand.Rand) string {
+	if source.Intn(2) == 0 {
+		return "Player choice of team"
+	}
+
+	return "No choice of team"
 }
 
 func getSeed(seedStr string, fallback string) int64 {
