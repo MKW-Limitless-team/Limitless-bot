@@ -84,6 +84,8 @@ func GenerateEventsData(interaction *discordgo.InteractionCreate) *discordgo.Int
 			fmt.Fprintf(&msg, "### Event %s | %s | ", LABELS[(i*2)+j], event.Name)
 			if shouldShowTeamChoice(event.Name) {
 				fmt.Fprintf(&msg, "%s\n", teamChoiceText(teamChoiceSource))
+			} else {
+				fmt.Fprintf(&msg, "\n")
 			}
 
 			fmt.Fprintf(&msg, "Starting Time: Between %s and %s\n",
