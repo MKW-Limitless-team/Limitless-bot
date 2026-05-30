@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"limitless-bot/commands"
@@ -10,6 +11,7 @@ import (
 	r "limitless-bot/response"
 	"limitless-bot/utils"
 	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -22,15 +24,34 @@ var (
 	USAGE_BUTTON = "usage:"
 )
 
+var discordMentionRegex = regexp.MustCompile(`^<@!?([0-9]+)>$`)
+
 type UsageEntry struct {
 	Name  string
 	Count int
+	Rank  int
 }
 
 type UsageSpec struct {
 	StatsType string
 	Title     string
 	Endpoint  string
+}
+
+type PInfoRequest struct {
+	PID uint64 `json:"pid"`
+}
+
+type PInfoResponse struct {
+	Player  *PInfoPlayer `json:"player"`
+	Success bool         `json:"success"`
+	Error   string       `json:"error"`
+}
+
+type PInfoPlayer struct {
+	ProfileID uint64 `json:"profile_id"`
+	MiiName   string `json:"mii_name"`
+	DiscordID string `json:"discord_id"`
 }
 
 var characterNames = map[string]string{
@@ -135,7 +156,8 @@ func VehiclesResponse(session *discordgo.Session, interaction *discordgo.Interac
 }
 
 func UsagePageResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
-	parts := strings.Split(interaction.MessageComponentData().CustomID, ":")
+	messageComponent := interaction.MessageComponentData()
+	parts := strings.Split(messageComponent.CustomID, ":")
 	if len(parts) != 5 {
 		return r.NewMessageResponse().SetResponseData(r.NewResponseData("Unable to change page").InteractionResponseData).InteractionResponse
 	}
@@ -150,13 +172,15 @@ func UsagePageResponse(session *discordgo.Session, interaction *discordgo.Intera
 		return r.NewMessageResponse().SetResponseData(r.NewResponseData("Invalid PID").InteractionResponseData).InteractionResponse
 	}
 
-	page, err := strconv.Atoi(parts[4])
-	if err != nil {
+	sortMode := parts[3]
+	page := UsagePage(parts[4])
+	if len(messageComponent.Values) > 0 {
+		sortMode = messageComponent.Values[0]
 		page = 1
 	}
 
 	response := r.NewMessageResponse().
-		SetResponseData(UsageEmbedData(spec, pid, parts[3], page))
+		SetResponseData(UsageEmbedData(session, interaction.GuildID, spec, pid, sortMode, page))
 	response.Type = discordgo.InteractionResponseUpdateMessage
 
 	return response.InteractionResponse
@@ -179,15 +203,15 @@ func VehicleUsageSpec() *UsageSpec {
 }
 
 func UsageData(session *discordgo.Session, interaction *discordgo.InteractionCreate, spec *UsageSpec, page int) *discordgo.InteractionResponseData {
-	pid, sortMode, errMessage := GetUsageRequest(session, interaction)
+	pid, errMessage := GetUsageRequest(session, interaction)
 	if errMessage != "" {
 		return r.NewResponseData(errMessage).InteractionResponseData
 	}
 
-	return UsageEmbedData(spec, pid, sortMode, page)
+	return UsageEmbedData(session, interaction.GuildID, spec, pid, "uses_desc", page)
 }
 
-func UsageEmbedData(spec *UsageSpec, pid uint64, sortMode string, page int) *discordgo.InteractionResponseData {
+func UsageEmbedData(session *discordgo.Session, guildID string, spec *UsageSpec, pid uint64, sortMode string, page int) *discordgo.InteractionResponseData {
 	data := r.NewResponseData("")
 	entries, err := GetUsageEntries(spec, pid, sortMode)
 	if err != nil || len(entries) == 0 {
@@ -203,8 +227,9 @@ func UsageEmbedData(spec *UsageSpec, pid uint64, sortMode string, page int) *dis
 		page = pageCount
 	}
 
-	embed := e.NewRichEmbed(spec.Title, fmt.Sprintf("PID: `%d`", pid), 0xd70ccf)
-	embed.SetFooter(fmt.Sprintf("Page : %d / %d | Sort: %s", page, pageCount, sortMode), "")
+	displayName := GetUsageDisplayName(session, guildID, pid)
+	embed := e.NewRichEmbed(fmt.Sprintf("**%s's %s usage**", displayName, strings.TrimSuffix(spec.StatsType, "s")), "", 0xd70ccf)
+	embed.SetFooter(fmt.Sprintf("Page : %d / %d | Sort: %s", page, pageCount, UsageSortLabel(sortMode)), "")
 
 	start := (page - 1) * entriesPerPage
 	end := start + entriesPerPage
@@ -213,7 +238,7 @@ func UsageEmbedData(spec *UsageSpec, pid uint64, sortMode string, page int) *dis
 	}
 
 	for _, entry := range entries[start:end] {
-		embed.AddField("", fmt.Sprintf("**%s:** %d", entry.Name, entry.Count), false)
+		embed.Description += fmt.Sprintf("%d. **%s** — *%d %s*\n", entry.Rank, entry.Name, entry.Count, UseText(entry.Count))
 	}
 
 	data.AddEmbed(embed)
@@ -228,48 +253,48 @@ func UsageEmbedData(spec *UsageSpec, pid uint64, sortMode string, page int) *dis
 		data.AddComponent(actionRow)
 	}
 
+	actionRow := components.NewActionRow()
+	actionRow.AddComponent(UsageSortMenu(spec.StatsType, pid, sortMode))
+	data.AddComponent(actionRow)
+
 	return data.InteractionResponseData
 }
 
-func GetUsageRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) (uint64, string, string) {
+func GetUsageRequest(session *discordgo.Session, interaction *discordgo.InteractionCreate) (uint64, string) {
 	options := interaction.ApplicationCommandData().Options
 	userOption := utils.GetOption(options, "user")
-	pidOption := utils.GetOption(options, "pid")
-	sortOption := utils.GetOption(options, "sort")
-
-	if userOption != nil && pidOption != nil {
-		return 0, "", "Please provide either a user or a PID, not both"
-	}
-
-	sortMode := "number"
-	if sortOption != nil {
-		sortMode = sortOption.StringValue()
-	}
-
-	if sortMode != "alphabetical" {
-		sortMode = "number"
-	}
-
-	if pidOption != nil {
-		pid, err := strconv.ParseUint(pidOption.StringValue(), 10, 64)
-		if err != nil || pid == 0 {
-			return 0, "", "Invalid PID"
-		}
-
-		return pid, sortMode, ""
-	}
 
 	userID := interaction.Member.User.ID
 	if userOption != nil {
-		userID = userOption.UserValue(session).ID
+		user := strings.TrimSpace(userOption.StringValue())
+		mention := discordMentionRegex.FindStringSubmatch(user)
+		if len(mention) == 2 {
+			userID = mention[1]
+		} else {
+			pid, err := GetUsagePID(user)
+			if err != nil {
+				return 0, "Invalid user or PID"
+			}
+
+			return pid, ""
+		}
 	}
 
 	pid, err := GetRegisteredPID(userID)
 	if err != nil {
-		return 0, "", "This user is not registered yet"
+		return 0, "This user is not registered yet"
 	}
 
-	return pid, sortMode, ""
+	return pid, ""
+}
+
+func GetUsagePID(user string) (uint64, error) {
+	pid, err := strconv.ParseUint(user, 10, 64)
+	if err != nil || pid == 0 {
+		return 0, fmt.Errorf("invalid pid")
+	}
+
+	return pid, nil
 }
 
 func GetRegisteredPID(userID string) (uint64, error) {
@@ -296,6 +321,62 @@ func GetRegisteredPID(userID string) (uint64, error) {
 	return jsonResponse.PlayerData.ProfileID, nil
 }
 
+func GetUsageDisplayName(session *discordgo.Session, guildID string, pid uint64) string {
+	pinfoRequest := &PInfoRequest{PID: pid}
+	marshalled, err := json.Marshal(pinfoRequest)
+	if err != nil {
+		return fmt.Sprintf("%d", pid)
+	}
+
+	resp, err := http.Post("http://wfc.blazico.nl/api/pinfo", "application/json", bytes.NewBuffer(marshalled))
+	if err != nil {
+		return fmt.Sprintf("%d", pid)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Sprintf("%d", pid)
+	}
+
+	var pinfoResponse *PInfoResponse
+	err = json.NewDecoder(resp.Body).Decode(&pinfoResponse)
+	if err != nil || pinfoResponse == nil || !pinfoResponse.Success || pinfoResponse.Player == nil {
+		return fmt.Sprintf("%d", pid)
+	}
+
+	if pinfoResponse.Player.DiscordID != "" {
+		return GetDiscordDisplayName(session, guildID, pinfoResponse.Player.DiscordID)
+	}
+
+	if pinfoResponse.Player.MiiName != "" {
+		return pinfoResponse.Player.MiiName
+	}
+
+	return fmt.Sprintf("%d", pid)
+}
+
+func GetDiscordDisplayName(session *discordgo.Session, guildID string, userID string) string {
+	member, err := session.GuildMember(guildID, userID)
+	if err == nil && member != nil {
+		return member.DisplayName()
+	}
+
+	user, err := session.User(userID)
+	if err == nil && user != nil {
+		return user.Username
+	}
+
+	return fmt.Sprintf("<@%s>", userID)
+}
+
+func UseText(count int) string {
+	if count == 1 {
+		return "use"
+	}
+
+	return "uses"
+}
+
 func GetUsageEntries(spec *UsageSpec, pid uint64, sortMode string) ([]*UsageEntry, error) {
 	resp, err := http.Get(fmt.Sprintf(spec.Endpoint, pid))
 	if err != nil {
@@ -315,7 +396,7 @@ func GetUsageEntries(spec *UsageSpec, pid uint64, sortMode string) ([]*UsageEntr
 
 	entries := make([]*UsageEntry, 0)
 	for key, count := range stats {
-		if key == "profile_id" || count == 0 {
+		if key == "profile_id" {
 			continue
 		}
 
@@ -325,15 +406,48 @@ func GetUsageEntries(spec *UsageSpec, pid uint64, sortMode string) ([]*UsageEntr
 		})
 	}
 
+	SetUsageRanks(entries)
 	SortUsageEntries(entries, sortMode)
 
 	return entries, nil
+}
+
+func SetUsageRanks(entries []*UsageEntry) {
+	sorted := make([]*UsageEntry, len(entries))
+	copy(sorted, entries)
+
+	sort.Slice(sorted, func(i, j int) bool {
+		if sorted[i].Count == sorted[j].Count {
+			return sorted[i].Name < sorted[j].Name
+		}
+
+		return sorted[i].Count > sorted[j].Count
+	})
+
+	rank := 0
+	lastCount := -1
+	for i, entry := range sorted {
+		if entry.Count != lastCount {
+			rank = i + 1
+			lastCount = entry.Count
+		}
+
+		entry.Rank = rank
+	}
 }
 
 func SortUsageEntries(entries []*UsageEntry, sortMode string) {
 	sort.Slice(entries, func(i, j int) bool {
 		if sortMode == "alphabetical" {
 			return entries[i].Name < entries[j].Name
+		}
+
+		if sortMode == "uses_asc" {
+			if entries[i].Count == entries[j].Count {
+				return entries[i].Name < entries[j].Name
+			}
+
+			return entries[i].Count < entries[j].Count
 		}
 
 		if entries[i].Count == entries[j].Count {
@@ -373,4 +487,50 @@ func UsageDisplayName(statsType string, key string) string {
 
 func UsageButtonID(statsType string, pid uint64, sortMode string, page int) string {
 	return fmt.Sprintf("%s%s:%d:%s:%d", USAGE_BUTTON, statsType, pid, sortMode, page)
+}
+
+func UsageSortMenu(statsType string, pid uint64, sortMode string) discordgo.MessageComponent {
+	minValues := 1
+	options := []discordgo.SelectMenuOption{
+		UsageSortOption("Uses descending", "uses_desc", sortMode),
+		UsageSortOption("Uses ascending", "uses_asc", sortMode),
+		UsageSortOption("Alphabetical", "alphabetical", sortMode),
+	}
+
+	return discordgo.SelectMenu{
+		MenuType:    discordgo.StringSelectMenu,
+		CustomID:    UsageButtonID(statsType, pid, sortMode, 1),
+		Placeholder: "Sort usage",
+		MinValues:   &minValues,
+		MaxValues:   1,
+		Options:     options,
+	}
+}
+
+func UsageSortOption(label string, value string, sortMode string) discordgo.SelectMenuOption {
+	return discordgo.SelectMenuOption{
+		Label:   label,
+		Value:   value,
+		Default: sortMode == value,
+	}
+}
+
+func UsageSortLabel(sortMode string) string {
+	switch sortMode {
+	case "alphabetical":
+		return "alphabetical"
+	case "uses_asc":
+		return "uses ascending"
+	default:
+		return "uses descending"
+	}
+}
+
+func UsagePage(pageStr string) int {
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		return 1
+	}
+
+	return page
 }
