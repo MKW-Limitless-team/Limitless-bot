@@ -31,6 +31,8 @@ func RegisterResponses() {
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
 	CommandResponses[commands.CHARACTERS_COMMAND] = CharactersResponse
 	CommandResponses[commands.VEHICLES_COMMAND] = VehiclesResponse
+	CommandResponses[commands.FC_TO_PID_COMMAND] = FCToPIDResponse
+	CommandResponses[commands.PID_TO_FC_COMMAND] = PIDToFCResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
