@@ -3,6 +3,7 @@ package events
 import (
 	"limitless-bot/responses"
 	"limitless-bot/utils"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -25,6 +26,26 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		interactionResp := responses.GetInteraction(customID, responses.InteractionResps)
 
 		if interactionResp != nil && utils.HasPermission(member, interactionResp.Permission) {
+			if strings.HasPrefix(customID, responses.USAGE_BUTTON) {
+				err := session.InteractionRespond(interaction.Interaction, &discordgo.InteractionResponse{Type: discordgo.InteractionResponseDeferredMessageUpdate})
+				if err != nil {
+					println(err.Error())
+					return
+				}
+
+				responseData := responses.UsagePageData(session, interaction)
+				_, err = session.InteractionResponseEdit(interaction.Interaction, &discordgo.WebhookEdit{
+					Content:    &responseData.Content,
+					Embeds:     &responseData.Embeds,
+					Components: &responseData.Components,
+				})
+
+				if err != nil {
+					println(err.Error())
+				}
+				return
+			}
+
 			response = interactionResp.Respond(session, interaction)
 		}
 

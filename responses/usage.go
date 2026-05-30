@@ -15,8 +15,11 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 
 	ltrcResponses "github.com/MKW-Limitless-team/limitless-types/responses"
+	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -24,12 +27,24 @@ var (
 	USAGE_BUTTON = "usage:"
 )
 
+const USAGE_CACHE_TTL = time.Minute * 5
+
+var usageCache = map[string]*UsageCacheEntry{}
+var usageCacheLock sync.Mutex
+
 var discordMentionRegex = regexp.MustCompile(`^<@!?([0-9]+)>$`)
+var friendCodeRegex = regexp.MustCompile(`^[0-9]{4}-[0-9]{4}-[0-9]{4}$`)
 
 type UsageEntry struct {
 	Name  string
 	Count int
 	Rank  int
+}
+
+type UsageCacheEntry struct {
+	Entries     []*UsageEntry
+	DisplayName string
+	ExpiresAt   time.Time
 }
 
 type UsageSpec struct {
@@ -156,10 +171,18 @@ func VehiclesResponse(session *discordgo.Session, interaction *discordgo.Interac
 }
 
 func UsagePageResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+	response := r.NewMessageResponse().
+		SetResponseData(UsagePageData(session, interaction))
+	response.Type = discordgo.InteractionResponseUpdateMessage
+
+	return response.InteractionResponse
+}
+
+func UsagePageData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	messageComponent := interaction.MessageComponentData()
 	parts := strings.Split(messageComponent.CustomID, ":")
 	if len(parts) != 5 {
-		return r.NewMessageResponse().SetResponseData(r.NewResponseData("Unable to change page").InteractionResponseData).InteractionResponse
+		return r.NewResponseData("Unable to change page").InteractionResponseData
 	}
 
 	spec := CharacterUsageSpec()
@@ -169,7 +192,7 @@ func UsagePageResponse(session *discordgo.Session, interaction *discordgo.Intera
 
 	pid, err := strconv.ParseUint(parts[2], 10, 64)
 	if err != nil {
-		return r.NewMessageResponse().SetResponseData(r.NewResponseData("Invalid PID").InteractionResponseData).InteractionResponse
+		return r.NewResponseData("Invalid PID").InteractionResponseData
 	}
 
 	sortMode := parts[3]
@@ -179,11 +202,7 @@ func UsagePageResponse(session *discordgo.Session, interaction *discordgo.Intera
 		page = 1
 	}
 
-	response := r.NewMessageResponse().
-		SetResponseData(UsageEmbedData(session, interaction.GuildID, spec, pid, sortMode, page))
-	response.Type = discordgo.InteractionResponseUpdateMessage
-
-	return response.InteractionResponse
+	return UsageEmbedData(session, interaction.GuildID, spec, pid, sortMode, page)
 }
 
 func CharacterUsageSpec() *UsageSpec {
@@ -213,10 +232,12 @@ func UsageData(session *discordgo.Session, interaction *discordgo.InteractionCre
 
 func UsageEmbedData(session *discordgo.Session, guildID string, spec *UsageSpec, pid uint64, sortMode string, page int) *discordgo.InteractionResponseData {
 	data := r.NewResponseData("")
-	entries, err := GetUsageEntries(spec, pid, sortMode)
-	if err != nil || len(entries) == 0 {
+	usageData, err := GetUsageCacheData(session, guildID, spec, pid)
+	if err != nil || len(usageData.Entries) == 0 {
 		return r.NewResponseData("This user is not registered yet").InteractionResponseData
 	}
+	entries := CopyUsageEntries(usageData.Entries)
+	SortUsageEntries(entries, sortMode)
 
 	entriesPerPage := 10
 	pageCount := (len(entries) + entriesPerPage - 1) / entriesPerPage
@@ -227,8 +248,7 @@ func UsageEmbedData(session *discordgo.Session, guildID string, spec *UsageSpec,
 		page = pageCount
 	}
 
-	displayName := GetUsageDisplayName(session, guildID, pid)
-	embed := e.NewRichEmbed(fmt.Sprintf("**%s's %s usage**", displayName, strings.TrimSuffix(spec.StatsType, "s")), "", 0xd70ccf)
+	embed := e.NewRichEmbed(fmt.Sprintf("**%s's %s usage**", usageData.DisplayName, strings.TrimSuffix(spec.StatsType, "s")), "", 0xd70ccf)
 	embed.SetFooter(fmt.Sprintf("Page : %d / %d | Sort: %s", page, pageCount, UsageSortLabel(sortMode)), "")
 
 	start := (page - 1) * entriesPerPage
@@ -289,6 +309,15 @@ func GetUsageRequest(session *discordgo.Session, interaction *discordgo.Interact
 }
 
 func GetUsagePID(user string) (uint64, error) {
+	if friendCodeRegex.MatchString(user) {
+		fc, err := strconv.ParseUint(strings.ReplaceAll(user, "-", ""), 10, 64)
+		if err != nil || fc == 0 {
+			return 0, fmt.Errorf("invalid friend-code")
+		}
+
+		return wwfc.FCToPid(fc), nil
+	}
+
 	pid, err := strconv.ParseUint(user, 10, 64)
 	if err != nil || pid == 0 {
 		return 0, fmt.Errorf("invalid pid")
@@ -377,7 +406,52 @@ func UseText(count int) string {
 	return "uses"
 }
 
-func GetUsageEntries(spec *UsageSpec, pid uint64, sortMode string) ([]*UsageEntry, error) {
+func GetUsageCacheData(session *discordgo.Session, guildID string, spec *UsageSpec, pid uint64) (*UsageCacheEntry, error) {
+	cacheKey := UsageCacheKey(spec.StatsType, guildID, pid)
+	now := time.Now()
+
+	usageCacheLock.Lock()
+	cached, ok := usageCache[cacheKey]
+	if ok && now.Before(cached.ExpiresAt) {
+		usageCacheLock.Unlock()
+		return cached, nil
+	}
+	usageCacheLock.Unlock()
+
+	entries, err := GetUsageEntries(spec, pid)
+	if err != nil {
+		return nil, err
+	}
+
+	displayName := GetUsageDisplayName(session, guildID, pid)
+	cached = &UsageCacheEntry{
+		Entries:     entries,
+		DisplayName: displayName,
+		ExpiresAt:   now.Add(USAGE_CACHE_TTL),
+	}
+
+	usageCacheLock.Lock()
+	usageCache[cacheKey] = cached
+	usageCacheLock.Unlock()
+
+	return cached, nil
+}
+
+func UsageCacheKey(statsType string, guildID string, pid uint64) string {
+	return fmt.Sprintf("%s:%s:%d", statsType, guildID, pid)
+}
+
+func CopyUsageEntries(entries []*UsageEntry) []*UsageEntry {
+	copied := make([]*UsageEntry, 0)
+	for _, entry := range entries {
+		copyEntry := *entry
+		copied = append(copied, &copyEntry)
+	}
+
+	return copied
+}
+
+func GetUsageEntries(spec *UsageSpec, pid uint64) ([]*UsageEntry, error) {
 	resp, err := http.Get(fmt.Sprintf(spec.Endpoint, pid))
 	if err != nil {
 		return nil, err
@@ -407,7 +481,6 @@ func GetUsageEntries(spec *UsageSpec, pid uint64, sortMode string) ([]*UsageEntr
 	}
 
 	SetUsageRanks(entries)
-	SortUsageEntries(entries, sortMode)
 
 	return entries, nil
 }
@@ -499,7 +572,7 @@ func UsageSortMenu(statsType string, pid uint64, sortMode string) discordgo.Mess
 
 	return discordgo.SelectMenu{
 		MenuType:    discordgo.StringSelectMenu,
-		CustomID:    UsageButtonID(statsType, pid, sortMode, 1),
+		CustomID:    UsageSortMenuID(statsType, pid, sortMode),
 		Placeholder: "Sort usage",
 		MinValues:   &minValues,
 		MaxValues:   1,
@@ -513,6 +586,10 @@ func UsageSortOption(label string, value string, sortMode string) discordgo.Sele
 		Value:   value,
 		Default: sortMode == value,
 	}
+}
+
+func UsageSortMenuID(statsType string, pid uint64, sortMode string) string {
+	return fmt.Sprintf("%s%s:%d:%s:sort", USAGE_BUTTON, statsType, pid, sortMode)
 }
 
 func UsageSortLabel(sortMode string) string {
