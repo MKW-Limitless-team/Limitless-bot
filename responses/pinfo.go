@@ -7,11 +7,9 @@ import (
 	e "limitless-bot/components/embed"
 	"limitless-bot/globals"
 	r "limitless-bot/response"
-	"limitless-bot/utils"
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
@@ -39,24 +37,20 @@ type PinfoAPIResponse struct {
 
 func PinfoResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := r.NewMessageResponse().
-		SetResponseData(PinfoData(interaction))
+		SetResponseData(PinfoData(session, interaction))
 
 	return response.InteractionResponse
 }
 
-func PinfoData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
-	options := interaction.ApplicationCommandData().Options
-	friendCode := utils.GetOption(options, "friend_code").StringValue()
-	friendCode = normalizeFriendCode(friendCode)
-
-	fc, err := strconv.ParseUint(friendCode, 10, 64)
-	if err != nil {
-		return r.NewResponseData("Invalid friend-code").InteractionResponseData
+func PinfoData(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
+	pid, errMessage := GetUsageRequest(session, interaction)
+	if errMessage != "" {
+		return r.NewResponseData(errMessage).InteractionResponseData
 	}
 
 	reqBody, err := json.Marshal(&PinfoRequestSpec{
 		Secret:    globals.SECRET,
-		ProfileID: uint32(wwfc.FCToPid(fc)),
+		ProfileID: uint32(pid),
 	})
 	if err != nil {
 		return r.NewResponseData("Failed to form pinfo request").InteractionResponseData
@@ -82,26 +76,12 @@ func PinfoData(interaction *discordgo.InteractionCreate) *discordgo.InteractionR
 	}
 
 	data := r.NewResponseData("")
-	data.AddEmbed(PinfoEmbed(formatFriendCode(friendCode), apiResponse.Player))
+	data.AddEmbed(PinfoEmbed(apiResponse.Player))
 	return data.InteractionResponseData
 }
 
-func normalizeFriendCode(friendCode string) string {
-	friendCode = strings.ReplaceAll(friendCode, "-", "")
-	return strings.TrimSpace(friendCode)
-}
-
-func formatFriendCode(friendCode string) string {
-	friendCode = normalizeFriendCode(friendCode)
-	if len(friendCode) != 12 {
-		return friendCode
-	}
-
-	return fmt.Sprintf("%s-%s-%s", friendCode[0:4], friendCode[4:8], friendCode[8:12])
-}
-
-func PinfoEmbed(friendCode string, player PinfoPlayer) *e.Embed {
-	embed := e.NewRichEmbed(fmt.Sprintf("Player info for friend code %s", friendCode), "", 0xf08aac)
+func PinfoEmbed(player PinfoPlayer) *e.Embed {
+	embed := e.NewRichEmbed(fmt.Sprintf("Player info for %s", FormatFC(wwfc.PidToFC(uint64(player.ProfileID)))), "", 0xf08aac)
 
 	embed.AddField("Profile ID", strconv.FormatUint(uint64(player.ProfileID), 10), false)
 

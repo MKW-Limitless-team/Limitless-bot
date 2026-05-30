@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"limitless-bot/response"
 	"limitless-bot/utils"
+	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
 )
+
+var friendCodeFormatRegex = regexp.MustCompile(`^[0-9]{12}$`)
 
 func FCToPIDResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	response := response.NewMessageResponse().
@@ -28,14 +31,8 @@ func PIDToFCResponse(session *discordgo.Session, interaction *discordgo.Interact
 func FCToPIDData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
 	options := interaction.ApplicationCommandData().Options
 	friendCode := utils.GetOption(options, "friend_code").StringValue()
-	fc := strings.ReplaceAll(friendCode, "-", "")
-
-	if len(fc) != 12 {
-		return response.NewResponseData("Invalid friend-code").InteractionResponseData
-	}
-
-	fcNum, err := strconv.ParseUint(fc, 10, 64)
-	if err != nil || fcNum == 0 {
+	fcNum, err := ParseFriendCode(friendCode)
+	if err != nil {
 		return response.NewResponseData("Invalid friend-code").InteractionResponseData
 	}
 
@@ -65,4 +62,20 @@ func FormatFC(fc uint64) string {
 	}
 
 	return fmt.Sprintf("%s-%s-%s", fcStr[:4], fcStr[4:8], fcStr[8:12])
+}
+
+func ParseFriendCode(friendCode string) (uint64, error) {
+	fc := strings.ReplaceAll(friendCode, "-", "")
+	fc = strings.TrimSpace(fc)
+
+	if !friendCodeFormatRegex.MatchString(fc) {
+		return 0, fmt.Errorf("invalid friend-code")
+	}
+
+	fcNum, err := strconv.ParseUint(fc, 10, 64)
+	if err != nil || fcNum == 0 {
+		return 0, fmt.Errorf("invalid friend-code")
+	}
+
+	return fcNum, nil
 }
