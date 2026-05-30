@@ -29,6 +29,7 @@ func RegisterResponses() {
 	CommandResponses[commands.EDIT_LICENSE_COMMAND] = EditLicenseResponse
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
+	CommandResponses[commands.PINFO_COMMAND] = PinfoResponse
 	CommandResponses[commands.CHARACTERS_COMMAND] = CharactersResponse
 	CommandResponses[commands.VEHICLES_COMMAND] = VehiclesResponse
 	CommandResponses[commands.FC_TO_PID_COMMAND] = FCToPIDResponse
