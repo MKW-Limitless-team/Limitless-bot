@@ -22,6 +22,8 @@ func RegisterCommands(session *discordgo.Session) error {
 	GlobalCommands = append(GlobalCommands, EditLicenseCommand())
 	// GlobalCommands = append(GlobalCommands, SubmitTimeCommand())
 	GlobalCommands = append(GlobalCommands, LicenseCommand())
+	GlobalCommands = append(GlobalCommands, CharactersCommand())
+	GlobalCommands = append(GlobalCommands, VehiclesCommand())
 	GlobalCommands = append(GlobalCommands, BanCommand())
 	GlobalCommands = append(GlobalCommands, UnbanCommand())
 	GlobalCommands = append(GlobalCommands, KickCommand())

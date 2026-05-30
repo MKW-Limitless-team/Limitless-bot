@@ -24,7 +24,7 @@ func InteractionCreate(session *discordgo.Session, interaction *discordgo.Intera
 		customID := interaction.Interaction.MessageComponentData().CustomID
 		interactionResp := responses.GetInteraction(customID, responses.InteractionResps)
 
-		if utils.HasPermission(member, interactionResp.Permission) {
+		if interactionResp != nil && utils.HasPermission(member, interactionResp.Permission) {
 			response = interactionResp.Respond(session, interaction)
 		}
 

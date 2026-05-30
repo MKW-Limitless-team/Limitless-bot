@@ -2,6 +2,7 @@ package responses
 
 import (
 	"limitless-bot/commands"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -28,6 +29,8 @@ func RegisterResponses() {
 	CommandResponses[commands.EDIT_LICENSE_COMMAND] = EditLicenseResponse
 	CommandResponses[commands.SUBMIT_TIME_COMMAND] = SubmitTimeResponse
 	CommandResponses[commands.LICENSE_COMMAND] = LicenseResponse
+	CommandResponses[commands.CHARACTERS_COMMAND] = CharactersResponse
+	CommandResponses[commands.VEHICLES_COMMAND] = VehiclesResponse
 	CommandResponses[commands.ONLINE_COMMAND] = OnlineResponse
 	CommandResponses[commands.TABLE_COMMAND] = TableRequest
 	CommandResponses[commands.GENERATE_EVENTS_COMMAND] = GenerateEventsFormRequest
@@ -43,6 +46,7 @@ func RegisterResponses() {
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: HOME_BUTTON, Respond: LeaderBoardResponse, Permission: int64(discordgo.PermissionViewChannel)})
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: NEXT_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: TABLE_EDIT_BUTTON, Respond: EditTableRequest, Permission: int64(discordgo.PermissionManageMessages)})
+	InteractionResps = append(InteractionResps, &InteractionResp{ID: USAGE_BUTTON, Respond: UsagePageResponse, Permission: int64(discordgo.PermissionViewChannel)})
 
 	// Add modal responses here
 	ModalResponses[TABLE_SUBMIT] = TableResponse
@@ -58,6 +62,12 @@ func RegisterResponses() {
 func GetInteraction(ID string, responses []*InteractionResp) *InteractionResp {
 	for _, response := range responses {
 		if response.ID == ID {
+			return response
+		}
+	}
+
+	for _, response := range responses {
+		if strings.HasPrefix(ID, response.ID) {
 			return response
 		}
 	}
