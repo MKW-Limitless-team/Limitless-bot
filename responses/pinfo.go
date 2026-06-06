@@ -4,15 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"limitless-bot/components"
+	"limitless-bot/components/button"
 	e "limitless-bot/components/embed"
 	"limitless-bot/globals"
 	r "limitless-bot/response"
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/MKW-Limitless-team/limitless-types/wwfc"
 	"github.com/bwmarrin/discordgo"
+)
+
+var (
+	PINFO_MII_BUTTON = "pinfo_mii:"
 )
 
 type PinfoRequestSpec struct {
@@ -48,23 +55,70 @@ func PinfoData(session *discordgo.Session, interaction *discordgo.InteractionCre
 		return r.NewResponseData(errMessage).InteractionResponseData
 	}
 
+	player, errMessage := GetPinfoPlayer(uint32(pid))
+	if errMessage != "" {
+		return r.NewResponseData(errMessage).InteractionResponseData
+	}
+
+	data := r.NewResponseData("")
+	data.AddEmbed(PinfoEmbed(*player))
+
+	if player.MiiData != "" {
+		actionRow := components.NewActionRow()
+		actionRow.AddComponent(button.NewBasicButton("Mii Data", PinfoMiiButtonID(player.ProfileID), discordgo.SecondaryButton, false))
+		data.AddComponent(actionRow)
+	}
+
+	return data.InteractionResponseData
+}
+
+func PinfoMiiResponse(session *discordgo.Session, interaction *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+	response := r.NewMessageResponse().
+		SetResponseData(PinfoMiiData(interaction))
+
+	response.Data.Flags = discordgo.MessageFlagsEphemeral
+
+	return response.InteractionResponse
+}
+
+func PinfoMiiData(interaction *discordgo.InteractionCreate) *discordgo.InteractionResponseData {
+	customID := interaction.MessageComponentData().CustomID
+	pidStr := strings.TrimPrefix(customID, PINFO_MII_BUTTON)
+	pid, err := strconv.ParseUint(pidStr, 10, 32)
+	if err != nil || pid == 0 {
+		return r.NewResponseData("Unable to get Mii data").InteractionResponseData
+	}
+
+	player, errMessage := GetPinfoPlayer(uint32(pid))
+	if errMessage != "" {
+		return r.NewResponseData(errMessage).InteractionResponseData
+	}
+
+	if player.MiiData == "" {
+		return r.NewResponseData("No Mii data found").InteractionResponseData
+	}
+
+	return r.NewResponseData(fmt.Sprintf("**Mii Data**\n```text\n%s\n```", player.MiiData)).InteractionResponseData
+}
+
+func GetPinfoPlayer(pid uint32) (*PinfoPlayer, string) {
 	reqBody, err := json.Marshal(&PinfoRequestSpec{
 		Secret:    globals.SECRET,
-		ProfileID: uint32(pid),
+		ProfileID: pid,
 	})
 	if err != nil {
-		return r.NewResponseData("Failed to form pinfo request").InteractionResponseData
+		return nil, "Failed to form pinfo request"
 	}
 
 	resp, err := http.Post("http://localhost/api/pinfo", "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		return r.NewResponseData("Unable to get player info").InteractionResponseData
+		return nil, "Unable to get player info"
 	}
 	defer resp.Body.Close()
 
 	var apiResponse PinfoAPIResponse
 	if err := json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
-		return r.NewResponseData("Unable to decode pinfo response").InteractionResponseData
+		return nil, "Unable to decode pinfo response"
 	}
 
 	if !apiResponse.Success {
@@ -72,12 +126,14 @@ func PinfoData(session *discordgo.Session, interaction *discordgo.InteractionCre
 			apiResponse.Error = "Failed to find user in the database"
 		}
 
-		return r.NewResponseData(apiResponse.Error).InteractionResponseData
+		return nil, apiResponse.Error
 	}
 
-	data := r.NewResponseData("")
-	data.AddEmbed(PinfoEmbed(apiResponse.Player))
-	return data.InteractionResponseData
+	return &apiResponse.Player, ""
+}
+
+func PinfoMiiButtonID(pid uint32) string {
+	return fmt.Sprintf("%s%d", PINFO_MII_BUTTON, pid)
 }
 
 func PinfoEmbed(player PinfoPlayer) *e.Embed {

@@ -50,6 +50,7 @@ func RegisterResponses() {
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: NEXT_BUTTON, Respond: IncPage, Permission: int64(discordgo.PermissionViewChannel)})
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: TABLE_EDIT_BUTTON, Respond: EditTableRequest, Permission: int64(discordgo.PermissionManageMessages)})
 	InteractionResps = append(InteractionResps, &InteractionResp{ID: USAGE_BUTTON, Respond: UsagePageResponse, Permission: int64(discordgo.PermissionViewChannel)})
+	InteractionResps = append(InteractionResps, &InteractionResp{ID: PINFO_MII_BUTTON, Respond: PinfoMiiResponse, Permission: int64(discordgo.PermissionViewChannel)})
 
 	// Add modal responses here
 	ModalResponses[TABLE_SUBMIT] = TableResponse
