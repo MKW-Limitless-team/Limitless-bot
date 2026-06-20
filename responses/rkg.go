@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"limitless-bot/commands"
@@ -44,14 +45,17 @@ func Detail(interaction *discordgo.InteractionCreate) *discordgo.InteractionResp
 	track := utils.GetOption(options, commands.TRACK_OPTION_NAME)
 	readable := rkg.ConvertRkg(rkg.ParseRKG(rkgData))
 
-	rkgEmbed := RkgEmbed(interaction, track.StringValue(), readable, url)
+	rkgEmbed := RkgEmbed(interaction, track.StringValue(), readable)
 
-	data.AddEmbed(rkgEmbed)
+	data.AddEmbed(rkgEmbed).AddFile(&discordgo.File{
+		Name:   file.Filename,
+		Reader: bytes.NewReader(rkgData),
+	})
 
 	return data.InteractionResponseData
 }
 
-func RkgEmbed(interaction *discordgo.InteractionCreate, track string, readable *rkg.ReadbleRKG, fileUrl string) *e.Embed {
+func RkgEmbed(interaction *discordgo.InteractionCreate, track string, readable *rkg.ReadbleRKG) *e.Embed {
 	header := readable.Header
 	embed := e.NewRichEmbed(track, "", 0xcb2b83)
 
@@ -84,10 +88,6 @@ func RkgEmbed(interaction *discordgo.InteractionCreate, track string, readable *
 	}
 
 	embed.AddField("", timeDetails.String(), false)
-
-	embed.AddField("", fmt.Sprintf("**File:** %s", fileUrl), false)
-
-	embed.URL = fileUrl
 
 	date := fmt.Sprintf("Date created at: %d/%d/%d", header.Day, header.Month, header.Year)
 	embed.SetFooter(date, interaction.Member.AvatarURL(""))
