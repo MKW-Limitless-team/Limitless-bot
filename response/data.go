@@ -70,6 +70,12 @@ func (data *Data) AddEmbed(embed *embed.Embed) *Data {
 	return data
 }
 
+func (data *Data) AddFile(file *discordgo.File) *Data {
+	data.Files = append(data.Files, file)
+
+	return data
+}
+
 func (data *Data) AddComponent(component discordgo.MessageComponent) *Data {
 	data.Components = append(data.Components, component)
 
